@@ -55,6 +55,19 @@ You must replace `devkey-123` with your personal API key.
 </aside>
 
 
+# Development Basics
+
+## Payloads and Protocols
+### oauth 2.0
+### json 
+### Compression
+### Sequence Identifiers
+
+##Setp
+###Callbacks 
+###ERROR CODES AND HANDLING
+
+
 # Environments
 
 OpenTable has three separate environments. Each environment:
@@ -94,13 +107,90 @@ Channels | https://channels.opentable.com
 <aside class="warning">Devloper keys must be specifically granted production access. Please cnontact us to request production privileges for your developer key.</aside>
 
 
-# Reservations
+# Booking
 
-## Make
+##reservation
+The partner data store is considered the source of truth for reservation information. Reservations cannot be created, changed, or canceld without first be ing communicated to the partner's api endopoints. OpenTable will always sek to make a reservation with a lock id specified. The lockid may refer to an ephemeral lock that has been discarded. In these cases OpenTable expects the partner api to attempt to book the reservation an a 'best efforts' basis as the uderlying inventory may have been taken by another diner.
 
-## Change
 
-## Notify
+###ENTITY
+Member | Description
+--------- | -----------
+rid | The rid that this reervation is assigned to
+href | The href that can be used to retrieve the reservation details from OpenTable
+lock_id | **Optional.** The id of the inventory lock acquired for this reservation.
+res_id | The id of the reservation. *This will be empty on creation and must be provided by the partner*
+res_datetime | The GMT time for which the reservation was maded
+res_state | This value must be One of the OpenTable RESERVATION STATES *(see below)*. The default state for a new reservation is BOOKED.
+party_size | The party size of the reservation
+diner_name | The first and last name of the diner
+diner_phone | **Optional.** The phone number for the diner for this reservation
+diner_email | **Optional.** The email address of the diner. This field will only be present if the diner has opted into email marketing for OpenTable.
+diner_notes | **Optional.**  Notes submitted by the diner along with this reservation
+diner_tags | **Optional.** Array of OpenTable specific diner tags
+
+
+###RESERVATION STATES
+
+Reservations will always be in one of the following states.
+
+NAME | Description
+--------- | -----------
+BOOKED | The reservation has been made. All reservations must start off in this state.
+SEATED | The party has arrived at the restaurant and ben seated.
+ASSUMED_SEATED | Time for reservation has passed but reservation has not placed into one of the terminal states by the partner system (DONE, NOSHOW, CANCELED). *OpenTable will set reservations to this state as part of its daily shift maintenance.*
+DONE | The reservation has been marked as 'Done' by the in-house staff
+NOSHOW | The diner failed to show at the restaurant
+CANCELED | The reservation has been canceled
+
+## Making a new reservation
+
+OpeTanbe will call the partner API whenever a diner is attempting to book a reservation. OpenTable may additionally call the **lock** API prior to booking a reservation. The call to lock will only occur when attempting to book a restaurant that has been marked as using the slot availability mode. Capacity mode bookings do not require slot locks by the partner system.
+
+Here are some other important points to note:
+
+* The href fiedld in the reservation supplied by OpenTable when booking the reservation will remain valid only if OpenTable receives a valid response to its POST call to the reservation endpoint.
+* The res_id field MUST be populated and returned by the partner API if the reservation is created in the partner's reservation system.
+* Should there be a communication break prior ro OpenTable receiving a 201 (or other) response then OpenTable will attempt at least one retry to create the reservation. The retry attempt will have the same unique href as was specified in the first attempt at reservation creation.
+
+
+###URL DETAIL
+
+`http://<partner_callback_url>/reservation/<reservation_id>`
+
+
+## Receiving updates
+
+OpenTable will PUT a reservation update message should any of the following reservation fields change.
+
+* Party Size
+* Reservation date and/or time
+
+Providers should acknowledge the PUT with a 200 and update the sequence-id with a neew value in order to help protect against collisions. 
+
+###URL DETAIL
+
+`http://<partner_callback_url>/reservation/<reservation_id>`
+
+###ENTITY
+
+see **Reservations** section above
+
+<aside class="warning">Reservations cannot be moved across restaurants or systems. In order to move a reservation it must first be cancelled and then a new one made in the target restaurant.</aside>
+
+## Sending Notifications
+
+Partner systems should perform a PUT to the OpenTable reservation system should any of the following reservation fields change.
+
+* Party Size
+* Reservation date and/or time
+
+
+###URL DETAIL
+
+`OpenTable href for the reservation. Please see reservation schema.`
+
+
 
 # Inventory
 
@@ -200,6 +290,8 @@ The cache is the entity that represents OpenTable's cached data for a given rest
 
 Partners may also perform a GET on the cache in order to validate OpenTable's current cache status.
 
+Partners may trigger a cache reset by POSTing a cache entity with a last_sequence_id of 0. OpenTable may invalidate the partner's cache by PUTing a cache entity with a last_sequence_id of 0. When a partner system receives a messag with a last_sequence_id the partner should send availability for the next 100 days.
+
 ## lock
 
 > OpenTable HTTP Request
@@ -238,7 +330,7 @@ This endpoint is called to reserve inventory while the diner completes the reser
 
 `INBOUND POST http://<your_endpoint>/lock`
 
-### Query Parameters
+### ENTITY
 
 Parameter | Required | Description
 --------- | ------- | -----------
@@ -252,115 +344,3 @@ turnTime | No | The length of time the reservation will be made for. This vakue 
 <aside class="success">
 Remember — always use your developer key
 </aside>
-
-## Invalidate
-
-## Refresh
-
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/3"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the cat to retrieve
-
