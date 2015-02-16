@@ -17,53 +17,41 @@ search: true
 
 # Welcome
 
-Welcome to the [OpenTable](http://wwww.opentable.com) Developer's Guide. This site will show you how to integrate with OpenTable's APIs to manage your restaurants and their inventory. 
+Welcome to the [OpenTable's](http://wwww.opentable.com) Online Developer's Guide. This guide is will show you how to integrate with OpenTable's APIs to manage your restaurants, reservations, and inventory. 
 
-
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Our REST-based APIs are accessible over HTTPs using JSON payloads. You must have a developer key to access the APIs. You can apply for a new Developer Access Key by contacting us [here](mailto:devkey-request@opentable.com).
-
-OpenTable uses oauth2.0 and expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: devkey-123`
-
-<aside class="notice">
-You must replace `devkey-123` with your personal API key.
-</aside>
 
 
 # Development Basics
+
+
+### SECURITY
+
+> Include the authentication token issued to you using the HTTP Authorization header
+
+OpenTable's Network Partner APIs can only be accessed via **HTTPS**. This applies to all of the environments; integration, pre-production, and producton.
+
+OpenTable uses ouath 2.0 as the primary security mechanism.This means that a token must be obtained at the stat of a session and used in all subsequent calls. Tokens should be presented to the API server by use of the **Authorization** header.
+
+### CONTENT NEGOTIATION
+
+Data is sent and received in JSON format unless otherwise specified in this documentation. Clients should specify **application/json** as the preferred **Content-Type** in all requests to the server.
+
+
+### COMPRESSION
+
+OpenTable's Partner Network APIs support LZ4 encoding. Client application should specify **lz4** via the **Content-Encoding** HTTP header whenever possible.
+
+<aside class="notice">
+Compression will dramatically improve the performance of your applications and should be implemented by your partner server implemntation as well as your client implementation. In short, your partner system should be able to send and respond with lz4 compressed content whenever possible.
+</aside>
 
 ## Payloads and Protocols
 ### oauth 2.0
 ### json 
 ### Compression
-### Sequence Identifiers
+### UNIQUE REQUEST IDS
 
-##Setp
+##Setup
 ###Callbacks 
 ###ERROR CODES AND HANDLING
 
@@ -74,7 +62,7 @@ OpenTable has three separate environments. Each environment:
 
 * corresponds to a different stage of the devlopment process
 * has different DNS names for the core services
-* has it's own copy of the data. state is not shared across environments.
+* has it's own copy of the data. State is not shared across environments.
 
 
 ## Continuous Integration
@@ -145,9 +133,9 @@ CANCELED | The reservation has been canceled
 
 ## Making a new reservation
 
-OpeTanbe will call the partner API whenever a diner is attempting to book a reservation. OpenTable may additionally call the **lock** API prior to booking a reservation. The call to lock will only occur when attempting to book a restaurant that has been marked as using the slot availability mode. Capacity mode bookings do not require slot locks by the partner system.
+OpenTable will call the partner API whenever a diner is attempting to book a reservation. OpenTable will call the **lock** API prior to booking a reservation via a POST to the reservation entity. 
 
-Here are some other important points to note:
+Other points of note:
 
 * The href fiedld in the reservation supplied by OpenTable when booking the reservation will remain valid only if OpenTable receives a valid response to its POST call to the reservation endpoint.
 * The res_id field MUST be populated and returned by the partner API if the reservation is created in the partner's reservation system.
@@ -194,11 +182,8 @@ Partner systems should perform a PUT to the OpenTable reservation system should 
 
 # Inventory
 
-OpenTable offers two models for API integrations; the *capacity-based model* and the *slot-based model*. The capacity based model is the simpler of the two and offers developers coarse grained control of the availability that surfaces on **www.opentable.com**.
+OpenTable offers partner's the ability to express availability using a **capacity-based model**. In this model the partner informs OpenTable of the availability for a given shift and date using a range of times, pacing, and party sizes that can be accomodated.
 
-The slot-based model offer extremely fine-grained control and is more complex to implement The slot-based model also involves much more frequent network communication between the OpenTable services and the partners providing inventory.
-
-The slot-based model has the advantage of allowing partners to control the inbound flow of reservations in near-real time.
 
 ## setup
 
@@ -242,9 +227,7 @@ online | If set to 'true', the restaurant will appear on the OpenTable website
 
 ## capacity
 
-Partners support the capacity-based model by publishing their capcity which details the number of bookings that they are willing to take along with the period of time for which they are willing to be taken. 
-
-Partners can override the capacity for a given day by simply publishing a new capacity document for that day. The capacity document may contain more than one shift for the day. However shifts may not overlap in time.
+The capacity entity is used by parteners to communicate the availability they are offering OpenTable diners for booking. OpenTable will attempt to consume this capcity until none is left. Partners are free to re-publish their capcaity as often as needed to either increase or decrease the allocation of inventory to OpenTable. The capacity document may contain more than one shift for the day; however shifts may not overlap in time.
 
 ###ENTITY
 
@@ -254,43 +237,12 @@ Member | Description
 rid | The restaurant id. Not required
 range_start | GMT date and time of the time period
 range_end | GMT date and time of the time period
-max_covers | The maximum number of web reservations the partner whiches to receive during this time range
+max_covers | The maximum number of web reservations the partner wishes to receive during this time range
 min_party_size | The minimum party size that will be accpted for booking
 max_party_size | The maximum party size that will be accpted for booking
 pacing | The number of reservations that will be accepted at each 15 minute pacing interval
 
 
-## slot
-
-OpenTable supports fine-grained integrations with partners via the publishing of **slot-based** availability. The slot-based model allows for restaurants to specify the seating opportunities available for specified party sizes. Unlike capacity based inventory, the partner must update the slot model every time availability is changed. This may happend for a number of seating events; new reservations, cancellations, or even moving reservations to different tables within the restaurant.
-
-###URL DETAIL
-
-`http://np.opentable.com/<partner_id>/slot/<rid>`
-
-Parameter | Required | Default | Description
---------- | ------- | --------| ---
-sequence_id | Yes | - | The current partner sequnce id for this restaurant. This value should be incrmented by one with each new send.
-
-
-###ENTITY
-Member | Description
---------- | -----------
-rid | The restaurant id. Not required
-time | The time increment referred to in GMT. Must be on 15 minute interval; e.g. 7:00, 7:15, 7:30, and 7:45
-party_size | The party size that may occupy this slot
-count | The number of slots for this party size and this time that remain
-shift_date | The business day that corresponds to this shift. This will be overwritten by the OpenTable api server based on the restaurant setup.
-
-<aside class="warning">The API will consider any time slot that has not been published to have a count of zero; meaning these time intervals will be unavailble for booking on the web. Once a slot has ben publish for a given time and party size, publishers must republish the same slot with a count of '0' in order ro make the slot unavailable on the website.</aside>
-
-## cache
-
-The cache is the entity that represents OpenTable's cached data for a given restaurant. Partners can call DELETE to invalidate OpenTable's cache. This will cause OpenTable to re-request all of the restaurant's availability for the standard time windoww of 100 days.
-
-Partners may also perform a GET on the cache in order to validate OpenTable's current cache status.
-
-Partners may trigger a cache reset by POSTing a cache entity with a last_sequence_id of 0. OpenTable may invalidate the partner's cache by PUTing a cache entity with a last_sequence_id of 0. When a partner system receives a messag with a last_sequence_id the partner should send availability for the next 100 days.
 
 ## lock
 
@@ -315,7 +267,7 @@ Location: "https://<partner_api>/lock/0a192810120212"
 ```
 ```json
   {
-    "lockId": "a192810120212", //assigned_by_partner
+    "lock_id": "a192810120212", //assigned_by_partner
     "rid": 1,
     "date": "Fluffums",
     "covers": "calico",
@@ -335,6 +287,7 @@ This endpoint is called to reserve inventory while the diner completes the reser
 Parameter | Required | Description
 --------- | ------- | -----------
 rid | Yes | The restaurant id
+lock_id | Yes | The id of the lock. This is assigned by the partner system and **must be globally unique**.
 date | Yes | The GMT start date and time of the reservation
 covers | Yes | The size of the party the booking is for
 expirationDate | No | GMT time at which the lock expires
