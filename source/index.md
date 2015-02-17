@@ -92,10 +92,29 @@ Channels | https://channels.opentable.com
 <aside class="warning">Developer keys must be specifically granted production access. Please contact us to request production privileges for your developer key.</aside>
 
 
+# Getting Started
+
+Most partner will integrate with the API in two disctinct phases. In the first phase the partner will make their availability visible online. In order to do this the partner must make at least two calls.
+
+### SETTING UP YOUR INTEGRATION
+- Obtain a client key and secret for oauth connectivity
+- Register callback
+
+### TAKING A RESTAURANT ONLINE
+
+- The first call will be a POST to the **restaurant** entity; this will ensure that the restaurant is online and accessible.
+- The next call will be a POST to the **capacity** entity for the restaurant. The capcaity must be updated for each day that that the partner wishes to make bookable on the website.
+
+### ACCEPTING A BOOKING
+
+- The partner integration must respond to a lock request with a 201 and a lock entity with a new valid id
+- The partner integration must respond to a **reservation** POST request with a 201 and a request entity with a new valid id
+
+
 # Booking
 
 ## Reservation
-The partner data store is considered the source of truth for reservation information. Reservations cannot be created, changed, or canceled without first be ing communicated to the partner's api endpoints. OpenTable will always sek to make a reservation with a lock id specified. The lock id may refer to an ephemeral lock that has been discarded. In these cases OpenTable expects the partner api to attempt to book the reservation an a 'best efforts' basis as the underlying inventory may have been taken by another diner.
+The partner data store is considered the source of truth for reservation information. Reservations cannot be created, changed, or canceled without first being communicated to the partner's api endpoints. OpenTable will always sek to make a reservation with a lock id specified. The lock id may refer to an ephemeral lock that has been discarded. In these cases OpenTable expects the partner api to attempt to book the reservation an a 'best efforts' basis as the underlying inventory may have been taken by another diner.
 
 
 ### ENTITY
@@ -177,10 +196,10 @@ Partner systems should perform a PUT to the OpenTable reservation system should 
 
 # Inventory
 
-OpenTable offers partner's the ability to express availability using a **capacity-based model**. In this model the partner informs OpenTable of the availability for a given shift and date using a range of times, pacing, and party sizes that can be accommodated.
+OpenTable offers partners the ability to express availability using a **capacity-based model**. In this model the partner informs OpenTable of the availability for a given shift and date using a range of times, pacing, and party sizes that can be accommodated.
 
 
-## setup
+## restaurant
 
 >Partner POST :: http://np.opentable.com/setup/8675309
 
@@ -207,7 +226,7 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 
 ###URI
 
-`http://np.opentable.com/<partner_id>/setup/<rid>`
+`http://np.opentable.com/<partner_id/restaurant/<rid>`
 
 
 ###ENTITY FIELDS
@@ -218,6 +237,10 @@ Member | Description
 rid | The restaurant id. Not required
 availability | Must be set to either 'capacity' or 'slot'
 online | If set to 'true', the restaurant will appear on the OpenTable website
+callback_url | The base url of the callback OpenTable will use to communicate with your integration
+partner_oauth | The oauth service OpenTable will communicate with to obtain tokens
+callback_key | The oauth key OpenTable will use to navigate the oauth handshake
+callback_secret | The oauth secret OpenTable will use to navigate the oauth handshake
 
 
 ## capacity
@@ -239,7 +262,7 @@ pacing | The number of reservations that will be accepted at each 15 minute paci
 
 
 
-## Lock
+## lock
 
 > OpenTable HTTP Request
 
