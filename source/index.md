@@ -247,6 +247,7 @@ callback_secret | The oauth secret OpenTable will use to navigate the oauth hand
 
 The capacity entity is used by partners to communicate the availability they are offering OpenTable diners for booking. OpenTable will attempt to consume this capacity until none is left. Partners are free to re-publish their capacity as often as needed to either increase or decrease the allocation of inventory to OpenTable. The capacity document may contain more than one shift for the day; however shifts may not overlap in time.
 
+
 ###ENTITY
 
 
@@ -259,6 +260,51 @@ max_covers | The maximum number of web reservations the partner wishes to receiv
 min_party_size | The minimum party size that will be accepted for booking
 max_party_size | The maximum party size that will be accepted for booking
 pacing | The number of reservations that will be accepted at each 15 minute pacing interval
+
+
+## slot
+
+>**POST :: http://np.opentable.com/42/slot**
+
+> In this instance the partner is updating the availablity for restaurant 8675309 that belongs tp partner 42. This below message indicates that there is availability for 7:00Pm, 7:15PM, 7:30PM, and 7:45PM for parties of size 2. It also indicates that there is availability at 7:00Pm and 7:15PM for parties of size 3. 
+
+```json
+  [
+      {
+      "rid" : "8675309",
+      "date" : "2015-05-02",
+      "party_size" : 2,
+      "time" : [420, 435, 450, 465],
+      "sequence_id" : 1 
+      } ,
+      {
+        "rid": "8675309",
+        "date": "2015-05-02",
+        "party_size" : 3,
+        "time": [420, 435],
+        "sequence_id" : 1
+      }
+  ]
+```
+
+Partners can inform OpenTable of availability by pushing the available inventory as a list of slots; where a slot is simply a date, time, and party size that can be booked at the restaurant. 
+
+Partners may specify multiple values for the time field in order to efficiently represent many slots that apply to the same party size.
+
+### HTTP Request
+
+`PUT http://np.opentable.com/<partner_id>/slot`
+
+###ENTITY
+
+
+Member | Description
+--------- | -----------
+rid | The restaurant id. **Required**
+date | The calendar date of the bookable slot
+party_size | The size of the party that may be booked at the time(s) specified
+time | An arry of times that date an party size apply to. Given as offsets in minutes from midnight.
+sequence_id | The monotonically increasing message id; updated by the partner API and validated by the OpenTable API. The OpenTable services will trigger a cache refresh if messages are deemed to be missing or too far out of order. When a cache refresh is triggered the sequence id should be set to zero for both parties and the partner integration should resend all of the (100) days that will need to be re-cached by the OpenTable services. Updates within the same PUT message for the same RID should have the same sequence id. The sequence id is global across all partner restaurant ids.
 
 
 
