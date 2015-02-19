@@ -19,24 +19,30 @@ search: true
 
 Welcome to the [OpenTable](http://www.opentable.com) Developer's Guide. This guide is will show you how to integrate with OpenTable's APIs to manage your restaurants, reservations, and inventory.
 
+# Getting Started
 
-# Development Basics
+## Overview
+
+Integration with the OpenTable Partner API involves following steps:
+
+1. Obtain a a client id and client secret that are used for authorization.
+2. Register a restaurant to provide required metadata and a callback. This will create a restaurant profile in [www.opentable.com] (www.opentable.com) search results.
+3. Publish your seating availability. This will enable diners to find available tables on [www.opentable.com] (www.opentable.com).
+4. Accept booking requests from OpenTable.
 
 ## Payloads and Protocols
 
-### SECURITY
+### Security
 
-> Include the OAuth token issued to you using the HTTP Authorization header (https://tools.ietf.org/html/rfc6750)
+OpenTable uses OAuth 2.0 as the primary authorization mechanism. This means that an access token must be obtained and submitted with all requests. See [Authorization](#authorization) section for more details.
 
-OpenTable's Network Partner APIs can only be accessed via **HTTPS**. This applies to all of the environments; integration, pre-production, and production.
+OpenTable's Network Partner APIs can only be accessed via **HTTPS**. This applies to all environments.
 
-OpenTable uses OAuth 2.0 as the primary security mechanism. This means that a token must be obtained at the start of a session and used in all subsequent calls. For all requests tokens tokens are sent to the API server in the **Authorization** header ((https://tools.ietf.org/html/rfc6750)).
-
-### CONTENT NEGOTIATION
+### Content Negotiation
 
 Data is sent and received in JSON format unless otherwise specified in this documentation. Clients should specify **application/json** in the **Accept** header for all requests to the server.
 
-### COMPRESSION
+### Compression
 
 OpenTable's Partner Network APIs support LZ4 encoding. Client application should specify **lz4** via the **Accept-Encoding** HTTP header whenever possible.
 
@@ -46,12 +52,11 @@ Compression will dramatically improve the performance of your applications and s
 
 ### Unique Request Ids
 
-All POST, PUT, and PATCH HTTP requests should contain a unique X-Request-Id header which is used to ensure idempotent message processing during retries
+All POST, PUT, and PATCH HTTP requests should contain a unique X-Request-Id header which is used to ensure idempotent message processing in case of a retry
 
-##Setup
-###Callbacks 
-###ERROR CODES AND HANDLING
+## Error Codes and Handling
 
+* TBD
 
 # Environments
 
@@ -61,16 +66,13 @@ OpenTable has three separate environments. Each environment:
 * has different DNS names for the core services
 * has it's own copy of the data. State is not shared across environments.
 
-
 ## Continuous Integration
 The Continuous Integration **(CI)** environment is used for daily automated builds and tests. Run your builds and tests against CI as frequently as needed to validate new functionality. Beta builds should always pass through the CI environment.
-
 
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-ci.opentable.com
 Channels | https://channels-ci.opentable.com
-
 
 ## Pre-Production
 The Pre-Production **(PP)** environment is available once you are ready for final acceptance testing of your OpenTable integrations. Load testing can also be scheduled and performed in this environment.
@@ -79,7 +81,6 @@ Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-pp.opentable.com
 Channels | https://channels-pp.opentable.com
-
 
 ## Production
 The production services are the same ones accessed by the OpenTable.com web site. Your integration is live once it is communicating with the OpenTable production web services.
@@ -91,121 +92,26 @@ Channels | https://channels.opentable.com
 
 <aside class="warning">Developer keys must be specifically granted production access. Please contact us to request production privileges for your developer key.</aside>
 
+# Authorization
 
-# Getting Started
+## Requesting a Client Id
 
-Most partner will integrate with the API in two disctinct phases. In the first phase the partner will make their availability visible online. In order to do this the partner must make at least two calls.
+`TODO. Authorization is not enforced in initial implementation.`
 
-### SETTING UP YOUR INTEGRATION
-- Obtain a client key and secret for oauth connectivity
-- Register callback
+## Obtaining a token
 
-### TAKING A RESTAURANT ONLINE
+`TODO. Authorization is not enforced in initial implementation.`
 
-- The first call will be a POST to the **restaurant** entity; this will ensure that the restaurant is online and accessible.
-- The next call will be a POST to the **capacity** entity for the restaurant. The capcaity must be updated for each day that that the partner wishes to make bookable on the website.
+## Authorizing requests
 
-### ACCEPTING A BOOKING
+`TODO. Authorization is not enforced in initial implementation.`
 
-- The partner integration must respond to a lock request with a 201 and a lock entity with a new valid id
-- The partner integration must respond to a **reservation** POST request with a 201 and a request entity with a new valid id
+# Registering a Restaurant
 
-
-# Booking
-
-## Reservation
-The partner data store is considered the source of truth for reservation information. Reservations cannot be created, changed, or canceled without first being communicated to the partner's api endpoints. OpenTable will always sek to make a reservation with a lock id specified. The lock id may refer to an ephemeral lock that has been discarded. In these cases OpenTable expects the partner api to attempt to book the reservation an a 'best efforts' basis as the underlying inventory may have been taken by another diner.
-
-
-### ENTITY
-Member | Description
---------- | -----------
-rid | The rid that this reservation is assigned to
-href | The href that can be used to retrieve the reservation details from OpenTable
-lock_id | **Optional.** The id of the inventory lock acquired for this reservation.
-res_id | The id of the reservation. *This will be empty on creation and must be provided by the partner*
-res_datetime | The UTC time for which the reservation was made
-res_state | This value must be One of the OpenTable RESERVATION STATES *(see below)*. The default state for a new reservation is BOOKED.
-party_size | The party size of the reservation
-diner_name | The first and last name of the diner
-diner_phone | **Optional.** The phone number for the diner for this reservation
-diner_email | **Optional.** The email address of the diner. This field will only be present if the diner has opted into email marketing for OpenTable.
-diner_notes | **Optional.**  Notes submitted by the diner along with this reservation
-diner_tags | **Optional.** Array of OpenTable specific diner tags
-
-
-### RESERVATION STATES
-
-Reservations will always be in one of the following states.
-
-NAME | Description
---------- | -----------
-BOOKED | The reservation has been made. All reservations must start off in this state.
-SEATED | The party has arrived at the restaurant and ben seated.
-ASSUMED_SEATED | Time for reservation has passed but reservation has not placed into one of the terminal states by the partner system (DONE, NOSHOW, CANCELED). *OpenTable will set reservations to this state as part of its daily shift maintenance.*
-DONE | The reservation has been marked as 'Done' by the in-house staff.
-NOSHOW | The diner failed to show at the restaurant.
-CANCELED | The reservation has been canceled.
-
-## Making a new reservation
-
-OpenTable will call the partner API whenever a diner is attempting to book a reservation. OpenTable will call the **lock** API prior to booking a reservation via a POST to the reservation entity. 
-
-Other points of note:
-
-* The href field in the reservation supplied by OpenTable when booking the reservation will remain valid only if OpenTable receives a valid response to its POST call to the reservation endpoint.
-* The res_id field MUST be populated and returned by the partner API if the reservation is created in the partner's reservation system.
-* Should there be a communication break prior ro OpenTable receiving a 201 (or other) response then OpenTable will attempt at least one retry to create the reservation. The retry attempt will have the same unique href as was specified in the first attempt at reservation creation.
-
-
-### URL DETAIL
-
-`http://<partner_callback_url>/reservation/<reservation_id>`
-
-
-## Receiving Updates
-
-OpenTable will PUT a reservation update message should any of the following reservation fields change.
-
-* Party Size
-* Reservation date and/or time
-
-Providers should acknowledge the PUT with a 200 and update the sequence-id with a new value in order to help protect against collisions.
-
-### URL DETAIL
-
-`http://<partner_callback_url>/reservation/<reservation_id>`
-
-### ENTITY
-
-see **Reservations** section above
-
-<aside class="warning">Reservations cannot be moved across restaurants or systems. In order to move a reservation it must first be cancelled and then a new one made in the target restaurant.</aside>
-
-## Sending Notifications
-
-Partner systems should perform a PUT to the OpenTable reservation system should any of the following reservation fields change.
-
-* Party Size
-* Reservation date and/or time
-
-
-### URL DETAIL
-
-`OpenTable href for the reservation. Please see reservation schema.`
-
-# Inventory
-
-OpenTable offers partners the ability to express availability using a **capacity-based model**. In this model the partner informs OpenTable of the availability for a given shift and date using a range of times, pacing, and party sizes that can be accommodated.
-
-
-## restaurant
-
->Partner POST :: http://np.opentable.com/setup/8675309
+>Partner POST :: http://np.opentable.com/<partner_id>/restaurant/<rid>
 
 ```json
   {
-    "rid": "8675309",
     "availability": "capacity",
     "online": "true"
   }
@@ -221,16 +127,13 @@ OpenTable offers partners the ability to express availability using a **capacity
   }
 ```
 
-
 The setup entity is used to specify how the restaurant will integrate with OpenTable. This entry must be POSTed to the server prior to the partner sending any capacity or slot updates. Availability updates sent prior to the setup being POSTed will fail with an error code of 407 (unexpected).
 
 ###URI
 
-`http://np.opentable.com/<partner_id/restaurant/<rid>`
-
+`http://np.opentable.com/<partner_id>/restaurant/<rid>`
 
 ###ENTITY FIELDS
-
 
 Member | Description
 --------- | -----------
@@ -242,14 +145,15 @@ partner_oauth | The oauth service OpenTable will communicate with to obtain toke
 callback_key | The oauth key OpenTable will use to navigate the oauth handshake
 callback_secret | The oauth secret OpenTable will use to navigate the oauth handshake
 
+# Publishing Seating Availability
 
-## capacity
+OpenTable offers partners the ability to express availability using a **capacity-based model**. In this model the partner informs OpenTable of the availability for a given shift and date using a range of times, pacing, and party sizes that can be accommodated.
+
+## Capacity
 
 The capacity entity is used by partners to communicate the availability they are offering OpenTable diners for booking. OpenTable will attempt to consume this capacity until none is left. Partners are free to re-publish their capacity as often as needed to either increase or decrease the allocation of inventory to OpenTable. The capacity document may contain more than one shift for the day; however shifts may not overlap in time.
 
-
-###ENTITY
-
+### Entity
 
 Member | Description
 --------- | -----------
@@ -261,12 +165,11 @@ min_party_size | The minimum party size that will be accepted for booking
 max_party_size | The maximum party size that will be accepted for booking
 pacing | The number of reservations that will be accepted at each 15 minute pacing interval
 
-
-## slot
+## Slot
 
 >**POST :: http://np.opentable.com/42/slot**
 
-> In this instance the partner is updating the availablity for restaurant 8675309 that belongs tp partner 42. This below message indicates that there is availability for 7:00Pm, 7:15PM, 7:30PM, and 7:45PM for parties of size 2. It also indicates that there is availability at 7:00Pm and 7:15PM for parties of size 3. 
+> In this instance the partner is updating the availablity for restaurant 8675309 that belongs tp partner 42. This below message indicates that there is availability for 7:00Pm, 7:15PM, 7:30PM, and 7:45PM for parties of size 2. It also indicates that there is availability at 7:00Pm and 7:15PM for parties of size 3.
 
 ```json
   [
@@ -275,7 +178,7 @@ pacing | The number of reservations that will be accepted at each 15 minute paci
       "date" : "2015-05-02",
       "party_size" : 2,
       "time" : [420, 435, 450, 465],
-      "sequence_id" : 1 
+      "sequence_id" : 1
       } ,
       {
         "rid": "8675309",
@@ -287,7 +190,7 @@ pacing | The number of reservations that will be accepted at each 15 minute paci
   ]
 ```
 
-Partners can inform OpenTable of availability by pushing the available inventory as a list of slots; where a slot is simply a date, time, and party size that can be booked at the restaurant. 
+Partners can inform OpenTable of availability by pushing the available inventory as a list of slots; where a slot is simply a date, time, and party size that can be booked at the restaurant.
 
 Partners may specify multiple values for the time field in order to efficiently represent many slots that apply to the same party size.
 
@@ -295,8 +198,7 @@ Partners may specify multiple values for the time field in order to efficiently 
 
 `PUT http://np.opentable.com/<partner_id>/slot`
 
-###ENTITY
-
+### Entity
 
 Member | Description
 --------- | -----------
@@ -306,9 +208,7 @@ party_size | The size of the party that may be booked at the time(s) specified
 time | An arry of times that date an party size apply to. Given as offsets in minutes from midnight.
 sequence_id | The monotonically increasing message id; updated by the partner API and validated by the OpenTable API. The OpenTable services will trigger a cache refresh if messages are deemed to be missing or too far out of order. When a cache refresh is triggered the sequence id should be set to zero for both parties and the partner integration should resend all of the (100) days that will need to be re-cached by the OpenTable services. Updates within the same PUT message for the same RID should have the same sequence id. The sequence id is global across all partner restaurant ids.
 
-
-
-## lock
+## Lock
 
 > OpenTable HTTP Request
 
@@ -346,7 +246,7 @@ This endpoint is called to reserve inventory while the diner completes the reser
 
 `INBOUND POST http://<your_endpoint>/lock`
 
-### ENTITY
+### Entity
 
 Parameter | Required | Description
 --------- | ------- | -----------
@@ -357,7 +257,81 @@ covers | Yes | The size of the party the booking is for
 expirationDate | No | GMT time at which the lock expires
 turnTime | No | The length of time the reservation will be made for. This value is given in minutes.
 
+# Booking
 
-<aside class="success">
-Remember — always use your developer key
-</aside>
+## Reservation
+The partner data store is considered the source of truth for reservation information. Reservations cannot be created, changed, or canceled without first being communicated to the partner's api endpoints. OpenTable will always sek to make a reservation with a lock id specified. The lock id may refer to an ephemeral lock that has been discarded. In these cases OpenTable expects the partner api to attempt to book the reservation an a 'best efforts' basis as the underlying inventory may have been taken by another diner.
+
+### Entity
+Member | Description
+--------- | -----------
+rid | The rid that this reservation is assigned to
+href | The href that can be used to retrieve the reservation details from OpenTable
+lock_id | **Optional.** The id of the inventory lock acquired for this reservation.
+res_id | The id of the reservation. *This will be empty on creation and must be provided by the partner*
+res_datetime | The UTC time for which the reservation was made
+res_state | This value must be One of the OpenTable RESERVATION STATES *(see below)*. The default state for a new reservation is BOOKED.
+party_size | The party size of the reservation
+diner_name | The first and last name of the diner
+diner_phone | **Optional.** The phone number for the diner for this reservation
+diner_email | **Optional.** The email address of the diner. This field will only be present if the diner has opted into email marketing for OpenTable.
+diner_notes | **Optional.**  Notes submitted by the diner along with this reservation
+diner_tags | **Optional.** Array of OpenTable specific diner tags
+
+### Reservation States
+
+Reservations will always be in one of the following states.
+
+NAME | Description
+--------- | -----------
+BOOKED | The reservation has been made. All reservations must start off in this state.
+SEATED | The party has arrived at the restaurant and ben seated.
+ASSUMED_SEATED | Time for reservation has passed but reservation has not placed into one of the terminal states by the partner system (DONE, NOSHOW, CANCELED). *OpenTable will set reservations to this state as part of its daily shift maintenance.*
+DONE | The reservation has been marked as 'Done' by the in-house staff.
+NOSHOW | The diner failed to show at the restaurant.
+CANCELED | The reservation has been canceled.
+
+## Making a new reservation
+
+OpenTable will call the partner API whenever a diner is attempting to book a reservation. OpenTable will call the **lock** API prior to booking a reservation via a POST to the reservation entity. 
+
+Other points of note:
+
+* The href field in the reservation supplied by OpenTable when booking the reservation will remain valid only if OpenTable receives a valid response to its POST call to the reservation endpoint.
+* The res_id field MUST be populated and returned by the partner API if the reservation is created in the partner's reservation system.
+* Should there be a communication break prior ro OpenTable receiving a 201 (or other) response then OpenTable will attempt at least one retry to create the reservation. The retry attempt will have the same unique href as was specified in the first attempt at reservation creation.
+
+### URL Detail
+
+`http://<partner_callback_url>/reservation/<reservation_id>`
+
+## Receiving Updates
+
+OpenTable will PUT a reservation update message should any of the following reservation fields change.
+
+* Party Size
+* Reservation date and/or time
+
+Providers should acknowledge the PUT with a 200 and update the sequence-id with a new value in order to help protect against collisions.
+
+### URL Detail
+
+`http://<partner_callback_url>/reservation/<reservation_id>`
+
+### Entity
+
+see **Reservations** section above
+
+<aside class="warning">Reservations cannot be moved across restaurants or systems. In order to move a reservation it must first be cancelled and then a new one made in the target restaurant.</aside>
+
+## Sending Notifications
+
+Partner systems should perform a PUT to the OpenTable reservation system should any of the following reservation fields change.
+
+* Party Size
+* Reservation date and/or time
+
+
+### URL Detail
+
+`OpenTable href for the reservation. Please see reservation schema.`
