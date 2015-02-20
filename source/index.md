@@ -72,7 +72,7 @@ The Continuous Integration **(CI)** environment is used for daily automated buil
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-ci.opentable.com
-Channels | https://channels-ci.opentable.com
+Partner | https://partner-ci.opentable.com
 
 ## Pre-Production
 The Pre-Production **(PP)** environment is available once you are ready for final acceptance testing of your OpenTable integrations. Load testing can also be scheduled and performed in this environment.
@@ -80,7 +80,7 @@ The Pre-Production **(PP)** environment is available once you are ready for fina
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-pp.opentable.com
-Channels | https://channels-pp.opentable.com
+Partner | https://partner-pp.opentable.com
 
 ## Production
 The production services are the same ones accessed by the OpenTable.com web site. Your integration is live once it is communicating with the OpenTable production web services.
@@ -88,7 +88,7 @@ The production services are the same ones accessed by the OpenTable.com web site
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth.opentable.com
-Channels | https://channels.opentable.com
+Partner | https://partner.opentable.com
 
 <aside class="warning">Developer keys must be specifically granted production access. Please contact us to request production privileges for your developer key.</aside>
 
@@ -98,17 +98,17 @@ Channels | https://channels.opentable.com
 
 `TODO. Authorization is not enforced in initial implementation.`
 
-## Obtaining a token
+## Obtaining a Token
 
 `TODO. Authorization is not enforced in initial implementation.`
 
-## Authorizing requests
+## Authorizing Requests
 
 `TODO. Authorization is not enforced in initial implementation.`
 
 # Registering a Restaurant
 
->Partner POST :: http://np.opentable.com/<partner_id>/restaurant/<rid>
+>Partner POST :: http://partner.opentable.com/<partner_id>/restaurants/<rid>
 
 ```json
   {
@@ -129,11 +129,11 @@ Channels | https://channels.opentable.com
 
 The setup entity is used to specify how the restaurant will integrate with OpenTable. This entry must be POSTed to the server prior to the partner sending any capacity or slot updates. Availability updates sent prior to the setup being POSTed will fail with an error code of 407 (unexpected).
 
-###URI
+### URI
 
-`http://np.opentable.com/<partner_id>/restaurant/<rid>`
+`http://partner.opentable.com/<partner_id>/restaurant/<rid>`
 
-###ENTITY FIELDS
+### Entity Fields
 
 Member | Description
 --------- | -----------
@@ -167,7 +167,7 @@ pacing | The number of reservations that will be accepted at each 15 minute paci
 
 ## Slot
 
->**POST :: http://np.opentable.com/42/slot**
+>**POST :: http://partner.opentable.com/42/slot**
 
 > In this instance the partner is updating the availablity for restaurant 8675309 that belongs tp partner 42. This below message indicates that there is availability for 7:00Pm, 7:15PM, 7:30PM, and 7:45PM for parties of size 2. It also indicates that there is availability at 7:00Pm and 7:15PM for parties of size 3.
 
@@ -196,7 +196,7 @@ Partners may specify multiple values for the time field in order to efficiently 
 
 ### HTTP Request
 
-`PUT http://np.opentable.com/<partner_id>/slot`
+`PUT http://partner.opentable.com/<partner_id>/slot`
 
 ### Entity
 
