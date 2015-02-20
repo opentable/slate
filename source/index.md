@@ -7,7 +7,7 @@ language_tabs:
   - shell
   
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
+  - <a href='#authorization'>Sign Up for Developer Access</a>
   
 includes:
   - errors
