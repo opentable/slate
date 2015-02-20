@@ -103,13 +103,6 @@ To request developer access, [send us an email](mailto:dchornyi@opentable.com). 
 
 ### Submitting Client Credentials
 
-Client credentials are submitted in the `Authorization` header as defined in the [OAuth spec](https://tools.ietf.org/html/rfc6749#section-2.3).
-Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"), you need to do the following:
-
-1. Concatenate them using a ":" (e.g., "client_id:client_secret")
-2. Base64 encode the result from step 1 (e.g., "Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=")
-3. Set the header "Authorization: Basic <result from step 2>" (e.g., "Authorization: Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=")
-
 > GET :: http://oauth.opentable.com/api/v2/oauth/token?grant_type=client_credentials
 
 > OpenTable response :: HTTP 1.1 200 OK
@@ -123,7 +116,16 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
     }
 ```
 
+Client credentials are submitted in the `Authorization` header as defined in the [OAuth spec](https://tools.ietf.org/html/rfc6749#section-2.3).
+Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"), you need to do the following:
+
+1. Concatenate them using a ":" (e.g., "client_id:client_secret")
+2. Base64 encode the result from step 1 (e.g., "Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=")
+3. Set the header "Authorization: Basic <result from step 2>" (e.g., "Authorization: Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=")
+
 ## Authorizing Requests
+
+> Authorization: bearer ba4a443d-3cc2-4472-9a92-e2347f1f5cf1
 
 1. [Obtain an access token](#obtaining-a-token)
 2. Set the header "Authorization: bearer <result from step 1>" (e.g., "Authorization: bearer a1c7b724-0a20-42be-9dd4-23d873db1f9b")
