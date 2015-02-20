@@ -323,7 +323,7 @@ Providers should acknowledge the PUT with a 200 and update the sequence-id with 
 
 ### Entity
 
-see **Reservations** section above
+See [Reservations](#reservation)
 
 <aside class="warning">Reservations cannot be moved across restaurants or systems. In order to move a reservation it must first be cancelled and then a new one made in the target restaurant.</aside>
 
