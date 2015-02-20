@@ -109,7 +109,7 @@ Network Partner | https://np.opentable.com
 
 # Registering a Restaurant
 
->Partner POST :: http://np.opentable.com/<partner_id>/restaurants/<rid>
+>Partner POST :: http://np.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;
 
 ```json
   {
@@ -168,7 +168,7 @@ pacing | The number of reservations that will be accepted at each 15 minute paci
 
 ## Slot
 
->**POST :: http://np.opentable.com/<partner_id>/restaurants/<rid>/slots**
+> POST :: http://np.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;/slots
 
 > In this instance the partner is updating the availability for restaurant 8675309 that belongs tp partner 42. This below message indicates that there is availability for 7:00Pm, 7:15PM, 7:30PM, and 7:45PM for parties of size 2. It also indicates that there is availability at 7:00Pm and 7:15PM for parties of size 3.
 
