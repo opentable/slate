@@ -97,15 +97,39 @@ Network Partner | https://np.opentable.com
 
 ## Requesting a Client Id
 
-`TODO. Authorization is not enforced in initial implementation.`
+To request developer access, [send us an email](mailto:dchornyi@opentable.com). Self-registration will be available soon.
 
 ## Obtaining a Token
 
-`TODO. Authorization is not enforced in initial implementation.`
+### Submitting Client Credentials
+
+Client credentials are submitted in the `Authorization` header as defined in the [OAuth spec](https://tools.ietf.org/html/rfc6749#section-2.3).
+Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"), you need to do the following:
+
+1. Concatenate them using a ":" (e.g., "client_id:client_secret")
+2. Base64 encode the result from step 1 (e.g., "Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=")
+3. Set the header "Authorization: Basic <result from step 2>" (e.g., "Authorization: Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=")
+
+> GET :: http://oauth.opentable.com/api/v2/oauth/token?grant_type=client_credentials
+
+> OpenTable response :: HTTP 1.1 200 OK
+
+```json
+    {
+        "access_token": "ba4a443d-3cc2-4472-9a92-e2347f1f5cf1",
+        "token_type": "bearer",
+        "expires_in": 2419181,
+        "scope": "DEFAULT"
+    }
+```
 
 ## Authorizing Requests
 
-`TODO. Authorization is not enforced in initial implementation.`
+1. [Obtain an access token](#obtaining-a-token)
+2. Set the header "Authorization: bearer <result from step 1>" (e.g., "Authorization: bearer a1c7b724-0a20-42be-9dd4-23d873db1f9b")
+3. Send the request
+    a. If the token is valid and not expired, an appropriate response from the resource server will be returned.
+    b. If the token is not valid, the resource server responds using the appropriate HTTP status code (typically, 400, 401, 403, or 405) and an error code [https://tools.ietf.org/html/rfc6750#section-3.1](https://tools.ietf.org/html/rfc6750#section-3.1)
 
 # Registering a Restaurant
 
