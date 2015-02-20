@@ -28,7 +28,8 @@ Integration with the OpenTable Partner API involves following steps:
 1. Obtain a a client id and client secret that are used for authorization.
 2. Register a restaurant to provide required metadata and a callback. This will create a restaurant profile in [www.opentable.com] (www.opentable.com) search results.
 3. Publish your seating availability. This will enable diners to find available tables on [www.opentable.com] (www.opentable.com).
-4. Accept booking requests from OpenTable.
+4. Accept reservation booking requests from OpenTable.
+5. Publish reservation cancellations and updates back to OpenTable
 
 ## Payloads and Protocols
 
@@ -72,7 +73,7 @@ The Continuous Integration **(CI)** environment is used for daily automated buil
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-ci.opentable.com
-Partner | https://partner-ci.opentable.com
+Network Partner | https://np-ci.opentable.com
 
 ## Pre-Production
 The Pre-Production **(PP)** environment is available once you are ready for final acceptance testing of your OpenTable integrations. Load testing can also be scheduled and performed in this environment.
@@ -80,7 +81,7 @@ The Pre-Production **(PP)** environment is available once you are ready for fina
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-pp.opentable.com
-Partner | https://partner-pp.opentable.com
+Network Partner | https://np-pp.opentable.com
 
 ## Production
 The production services are the same ones accessed by the OpenTable.com web site. Your integration is live once it is communicating with the OpenTable production web services.
@@ -88,9 +89,9 @@ The production services are the same ones accessed by the OpenTable.com web site
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth.opentable.com
-Partner | https://partner.opentable.com
+Network Partner | https://np.opentable.com
 
-<aside class="warning">Developer keys must be specifically granted production access. Please contact us to request production privileges for your developer key.</aside>
+<aside class="warning">Client ids need be specifically granted production access. Please contact us to request production privileges for your client id.</aside>
 
 # Authorization
 
@@ -108,7 +109,7 @@ Partner | https://partner.opentable.com
 
 # Registering a Restaurant
 
->Partner POST :: http://partner.opentable.com/<partner_id>/restaurants/<rid>
+>Partner POST :: http://np.opentable.com/<partner_id>/restaurants/<rid>
 
 ```json
   {
@@ -131,7 +132,7 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 
 ### URI
 
-`http://partner.opentable.com/<partner_id>/restaurant/<rid>`
+`http://np.opentable.com/<partner_id>/restaurants/<rid>`
 
 ### Entity Fields
 
@@ -167,9 +168,9 @@ pacing | The number of reservations that will be accepted at each 15 minute paci
 
 ## Slot
 
->**POST :: http://partner.opentable.com/42/slot**
+>**POST :: http://np.opentable.com/<partner_id>/restaurants/<rid>/slots**
 
-> In this instance the partner is updating the availablity for restaurant 8675309 that belongs tp partner 42. This below message indicates that there is availability for 7:00Pm, 7:15PM, 7:30PM, and 7:45PM for parties of size 2. It also indicates that there is availability at 7:00Pm and 7:15PM for parties of size 3.
+> In this instance the partner is updating the availability for restaurant 8675309 that belongs tp partner 42. This below message indicates that there is availability for 7:00Pm, 7:15PM, 7:30PM, and 7:45PM for parties of size 2. It also indicates that there is availability at 7:00Pm and 7:15PM for parties of size 3.
 
 ```json
   [
@@ -196,7 +197,7 @@ Partners may specify multiple values for the time field in order to efficiently 
 
 ### HTTP Request
 
-`PUT http://partner.opentable.com/<partner_id>/slot`
+`PUT http://np.opentable.com/<partner_id>/restaurants/<rid>/slots`
 
 ### Entity
 
@@ -227,7 +228,7 @@ POST
 > Partner Response
 
 ```shell
-Location: "https://<partner_api>/lock/0a192810120212"
+Location: "https://<partner_callback_url>/locks"
 ```
 ```json
   {
@@ -244,7 +245,7 @@ This endpoint is called to reserve inventory while the diner completes the reser
 
 ### HTTP Request
 
-`INBOUND POST http://<your_endpoint>/lock`
+`INBOUND POST https://<partner_callback_url>/locks`
 
 ### Entity
 
@@ -303,7 +304,7 @@ Other points of note:
 
 ### URL Detail
 
-`http://<partner_callback_url>/reservation/<reservation_id>`
+`https://<partner_callback_url>/reservations/<reservation_id>`
 
 ## Receiving Updates
 
@@ -316,7 +317,7 @@ Providers should acknowledge the PUT with a 200 and update the sequence-id with 
 
 ### URL Detail
 
-`http://<partner_callback_url>/reservation/<reservation_id>`
+`https://<partner_callback_url>/reservations/<reservation_id>`
 
 ### Entity
 
