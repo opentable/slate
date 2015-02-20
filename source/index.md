@@ -29,7 +29,7 @@ Integration with the OpenTable Partner API involves following steps:
 2. Register a restaurant to provide required metadata and a callback. This will create a restaurant profile in [www.opentable.com] (www.opentable.com) search results.
 3. Publish your seating availability. This will enable diners to find available tables on [www.opentable.com] (www.opentable.com).
 4. Accept reservation booking requests from OpenTable.
-5. Publish reservation cancellations and updates back to OpenTable
+5. Send and receive reservation updates and cancellations.
 
 ## Payloads and Protocols
 
@@ -258,7 +258,7 @@ covers | Yes | The size of the party the booking is for
 expirationDate | No | GMT time at which the lock expires
 turnTime | No | The length of time the reservation will be made for. This value is given in minutes.
 
-# Booking
+# Booking a Reservation
 
 ## Reservation
 The partner data store is considered the source of truth for reservation information. Reservations cannot be created, changed, or canceled without first being communicated to the partner's api endpoints. OpenTable will always sek to make a reservation with a lock id specified. The lock id may refer to an ephemeral lock that has been discarded. In these cases OpenTable expects the partner api to attempt to book the reservation an a 'best efforts' basis as the underlying inventory may have been taken by another diner.
@@ -306,7 +306,9 @@ Other points of note:
 
 `https://<partner_callback_url>/reservations/<reservation_id>`
 
-## Receiving Updates
+# Exchanging Reservation Updates
+
+## Receiving Updates from OpenTable
 
 OpenTable will PUT a reservation update message should any of the following reservation fields change.
 
@@ -325,13 +327,12 @@ see **Reservations** section above
 
 <aside class="warning">Reservations cannot be moved across restaurants or systems. In order to move a reservation it must first be cancelled and then a new one made in the target restaurant.</aside>
 
-## Sending Notifications
+## Sending Updates to OpenTable
 
 Partner systems should perform a PUT to the OpenTable reservation system should any of the following reservation fields change.
 
 * Party Size
 * Reservation date and/or time
-
 
 ### URL Detail
 
