@@ -149,8 +149,7 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
   {
     "rid": "8675309",
     "availability": "capacity",
-    "online": "true",
-    "timestamp": "87191021283"
+    "online": "true"
   }
 ```
 
@@ -244,10 +243,10 @@ POST
 
   {
     "rid": 1,
-    "date": "Fluffums",
+    "date": "2015-02-18T18:15:00Z",
     "covers": "calico",
-    "expirationSeconds": 180,
-    "turnTimeMinutes": 90
+    "expiration_seconds": 180,
+    "turn_time_minutes": 90
   }
 ```
 
@@ -260,10 +259,10 @@ Location: "https://<partner_callback_url>/locks"
   {
     "lock_id": "a192810120212", //assigned_by_partner
     "rid": 1,
-    "date": "Fluffums",
+    "date": "2015-02-18T18:15:00Z",
     "covers": "calico",
-    "expirationSeconds": 180,
-    "turnTimeMinutes": 90
+    "expiration_seconds": 180,
+    "turn_time_minutes": 90
   }
 ```
 
@@ -279,10 +278,10 @@ Parameter | Required | Description
 --------- | ------- | -----------
 rid | Yes | The restaurant id
 lock_id | Yes | The id of the lock. This is assigned by the partner system and **must be globally unique**.
-date | Yes | The GMT start date and time of the reservation
+date | Yes | The UTC start date and time of the reservation
 covers | Yes | The size of the party the booking is for
-expirationDate | No | GMT time at which the lock expires
-turnTime | No | The length of time the reservation will be made for. This value is given in minutes.
+expiration_seconds | No | Number of seconds until the lock expires
+turn_time_minutes | No | The length of time the reservation will be made for. This value is given in minutes.
 
 # Booking a Reservation
 
@@ -296,7 +295,7 @@ rid | The rid that this reservation is assigned to
 href | The href that can be used to retrieve the reservation details from OpenTable
 lock_id | **Optional.** The id of the inventory lock acquired for this reservation.
 res_id | The id of the reservation. *This will be empty on creation and must be provided by the partner*
-res_datetime | The UTC time for which the reservation was made
+res_date | The UTC date and time for which the reservation was made
 res_state | This value must be One of the OpenTable RESERVATION STATES *(see below)*. The default state for a new reservation is BOOKED.
 party_size | The party size of the reservation
 diner_name | The first and last name of the diner
@@ -339,7 +338,7 @@ Other points of note:
 OpenTable will PUT a reservation update message should any of the following reservation fields change.
 
 * Party Size
-* Reservation date and/or time
+* Reservation date and time
 
 Providers should acknowledge the PUT with a 200 and update the sequence-id with a new value in order to help protect against collisions.
 
@@ -358,7 +357,7 @@ See [Reservations](#reservation)
 Partner systems should perform a PUT to the OpenTable reservation system should any of the following reservation fields change.
 
 * Party Size
-* Reservation date and/or time
+* Reservation date and time
 
 ### URL Detail
 
