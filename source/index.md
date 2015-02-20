@@ -193,9 +193,7 @@ pacing | The number of reservations that will be accepted at each 15 minute paci
 
 ## Slot
 
-> POST :: http://np.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;/slots
-
-> In this instance the partner is updating the availability for restaurant 8675309 that belongs tp partner 42. This below message indicates that there is availability for 7:00Pm, 7:15PM, 7:30PM, and 7:45PM for parties of size 2. It also indicates that there is availability at 7:00Pm and 7:15PM for parties of size 3.
+> Partner POST :: http://np.opentable.com/&lt;partner_id&gt;/slots
 
 ```json
   [
@@ -214,6 +212,8 @@ pacing | The number of reservations that will be accepted at each 15 minute paci
         "sequence_id" : 1
       }
   ]
+```
+> OpenTable response :: HTTP 1.1 200 OK
 ```
 
 Partners can inform OpenTable of availability by pushing the available inventory as a list of slots; where a slot is simply a date, time, and party size that can be booked at the restaurant.
@@ -236,11 +236,9 @@ sequence_id | The monotonically increasing message id; updated by the partner AP
 
 ## Lock
 
-> OpenTable HTTP Request
+> OpenTable POST :: https://&lt;partner_callback_url&gt;/locks
 
 ```json
-POST
-
   {
     "rid": 1,
     "date": "2015-02-18T18:15:00Z",
@@ -250,11 +248,8 @@ POST
   }
 ```
 
-> Partner Response
+> Partner response
 
-```shell
-Location: "https://<partner_callback_url>/locks"
-```
 ```json
   {
     "lock_id": "a192810120212", //assigned_by_partner
@@ -267,10 +262,6 @@ Location: "https://<partner_callback_url>/locks"
 ```
 
 This endpoint is called to reserve inventory while the diner completes the reservation process. The channel inventory system must hold the inventory booking until the expiration date is reached. If the expiration date is reached and the lock has not been cancelled then the underlying inventory can be released and used for other reservations.
-
-### HTTP Request
-
-`INBOUND POST https://<partner_callback_url>/locks`
 
 ### Entity
 
