@@ -25,7 +25,7 @@ Welcome to the [OpenTable](http://www.opentable.com) Developer's Guide. This gui
 
 Integration with the OpenTable Partner API involves following steps:
 
-1. Obtain a a client id and client secret that are used for authorization.
+1. Obtain a client id and client secret that are used for authorization.
 2. Register a restaurant to provide required metadata and a callback. This will create a restaurant profile in [www.opentable.com] (www.opentable.com) search results.
 3. Publish your seating availability. This will enable diners to find available tables on [www.opentable.com] (www.opentable.com).
 4. Accept reservation booking requests from OpenTable.
@@ -139,8 +139,8 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 
 ```json
   {
-    "availability": "capacity",
-    "online": "true"
+    "online": "true",
+    "callbackURL": "http://acme.com/api/restaurants/12345"
   }
 ```
 > OpenTable resopnse :: HTTP 1.1 200 OK
@@ -148,12 +148,12 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 ```json
   {
     "rid": "8675309",
-    "availability": "capacity",
-    "online": "true"
+    "online": "true",
+    "callbackURL": "http://acme.com/api/restaurants/12345"
   }
 ```
 
-The setup entity is used to specify how the restaurant will integrate with OpenTable. This entry must be POSTed to the server prior to the partner sending any capacity or slot updates. Availability updates sent prior to the setup being POSTed will fail with an error code of 407 (unexpected).
+The setup entity is used to specify how the restaurant will integrate with OpenTable. This entry must be POSTed to the server prior to the partner sending any availability updates. Availability updates sent prior to the setup being POSTed will fail with an error code of 407 (unexpected).
 
 ### URI
 
@@ -164,36 +164,17 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 Member | Description
 --------- | -----------
 rid | The restaurant id. Not required
-availability | Must be set to either 'capacity' or 'slot'
 online | If set to 'true', the restaurant will appear on the OpenTable website
 callback_url | The base url of the callback OpenTable will use to communicate with your integration
 partner_oauth | The oauth service OpenTable will communicate with to obtain tokens
 callback_key | The oauth key OpenTable will use to navigate the oauth handshake
 callback_secret | The oauth secret OpenTable will use to navigate the oauth handshake
 
-# Publishing Seating Availability
+# Publishing Availability
 
-OpenTable offers partners the ability to express availability using a **capacity-based model**. In this model the partner informs OpenTable of the availability for a given shift and date using a range of times, pacing, and party sizes that can be accommodated.
+## Availability
 
-## Capacity
-
-The capacity entity is used by partners to communicate the availability they are offering OpenTable diners for booking. OpenTable will attempt to consume this capacity until none is left. Partners are free to re-publish their capacity as often as needed to either increase or decrease the allocation of inventory to OpenTable. The capacity document may contain more than one shift for the day; however shifts may not overlap in time.
-
-### Entity
-
-Member | Description
---------- | -----------
-rid | The restaurant id. Not required
-range_start | UTC date and time of the time period
-range_end | UTC date and time of the time period
-max_covers | The maximum number of web reservations the partner wishes to receive during this time range
-min_party_size | The minimum party size that will be accepted for booking
-max_party_size | The maximum party size that will be accepted for booking
-pacing | The number of reservations that will be accepted at each 15 minute pacing interval
-
-## Slot
-
-> Partner POST :: http://np.opentable.com/&lt;partner_id&gt;/slots
+> Partner POST :: http://np.opentable.com/&lt;partner_id&gt;/availability
 
 ```json
   [
@@ -222,7 +203,7 @@ Partners may specify multiple values for the time field in order to efficiently 
 
 ### HTTP Request
 
-`PUT http://np.opentable.com/<partner_id>/restaurants/<rid>/slots`
+`PUT http://np.opentable.com/<partner_id>/availability`
 
 ### Entity
 
@@ -234,7 +215,41 @@ party_size | The size of the party that may be booked at the time(s) specified
 time | An arry of times that date an party size apply to. Given as offsets in minutes from midnight.
 sequence_id | The monotonically increasing message id; updated by the partner API and validated by the OpenTable API. The OpenTable services will trigger a cache refresh if messages are deemed to be missing or too far out of order. When a cache refresh is triggered the sequence id should be set to zero for both parties and the partner integration should resend all of the (100) days that will need to be re-cached by the OpenTable services. Updates within the same PUT message for the same RID should have the same sequence id. The sequence id is global across all partner restaurant ids.
 
-## Lock
+# Booking a Reservation
+
+## Reservation
+The partner data store is considered the source of truth for reservation information. Reservations cannot be created, changed, or canceled without first being communicated to the partner's api endpoints. OpenTable will always sek to make a reservation with a lock id specified. The lock id may refer to an ephemeral lock that has been discarded. In these cases OpenTable expects the partner api to attempt to book the reservation an a 'best efforts' basis as the underlying inventory may have been taken by another diner.
+
+### Entity
+Member | Description
+--------- | -----------
+rid | The rid that this reservation is assigned to
+href | The href that can be used to retrieve the reservation details from OpenTable
+lock_id | **Optional.** The id of the inventory lock acquired for this reservation.
+res_id | The id of the reservation. *This will be empty on creation and must be provided by the partner*
+res_date | The UTC date and time for which the reservation was made
+res_state | This value must be One of the OpenTable RESERVATION STATES *(see below)*. The default state for a new reservation is BOOKED.
+party_size | The party size of the reservation
+diner_name | The first and last name of the diner
+diner_phone | **Optional.** The phone number for the diner for this reservation
+diner_email | **Optional.** The email address of the diner. This field will only be present if the diner has opted into email marketing for OpenTable.
+diner_notes | **Optional.**  Notes submitted by the diner along with this reservation
+diner_tags | **Optional.** Array of OpenTable specific diner tags
+
+### Reservation States
+
+Reservations will always be in one of the following states.
+
+NAME | Description
+--------- | -----------
+BOOKED | The reservation has been made. All reservations must start off in this state.
+SEATED | The party has arrived at the restaurant and ben seated.
+ASSUMED_SEATED | Time for reservation has passed but reservation has not placed into one of the terminal states by the partner system (DONE, NOSHOW, CANCELED). *OpenTable will set reservations to this state as part of its daily shift maintenance.*
+DONE | The reservation has been marked as 'Done' by the in-house staff.
+NOSHOW | The diner failed to show at the restaurant.
+CANCELED | The reservation has been canceled.
+
+## Locking a Reservation
 
 > OpenTable POST :: https://&lt;partner_callback_url&gt;/locks
 
@@ -273,40 +288,6 @@ date | Yes | The UTC start date and time of the reservation
 covers | Yes | The size of the party the booking is for
 expiration_seconds | No | Number of seconds until the lock expires
 turn_time_minutes | No | The length of time the reservation will be made for. This value is given in minutes.
-
-# Booking a Reservation
-
-## Reservation
-The partner data store is considered the source of truth for reservation information. Reservations cannot be created, changed, or canceled without first being communicated to the partner's api endpoints. OpenTable will always sek to make a reservation with a lock id specified. The lock id may refer to an ephemeral lock that has been discarded. In these cases OpenTable expects the partner api to attempt to book the reservation an a 'best efforts' basis as the underlying inventory may have been taken by another diner.
-
-### Entity
-Member | Description
---------- | -----------
-rid | The rid that this reservation is assigned to
-href | The href that can be used to retrieve the reservation details from OpenTable
-lock_id | **Optional.** The id of the inventory lock acquired for this reservation.
-res_id | The id of the reservation. *This will be empty on creation and must be provided by the partner*
-res_date | The UTC date and time for which the reservation was made
-res_state | This value must be One of the OpenTable RESERVATION STATES *(see below)*. The default state for a new reservation is BOOKED.
-party_size | The party size of the reservation
-diner_name | The first and last name of the diner
-diner_phone | **Optional.** The phone number for the diner for this reservation
-diner_email | **Optional.** The email address of the diner. This field will only be present if the diner has opted into email marketing for OpenTable.
-diner_notes | **Optional.**  Notes submitted by the diner along with this reservation
-diner_tags | **Optional.** Array of OpenTable specific diner tags
-
-### Reservation States
-
-Reservations will always be in one of the following states.
-
-NAME | Description
---------- | -----------
-BOOKED | The reservation has been made. All reservations must start off in this state.
-SEATED | The party has arrived at the restaurant and ben seated.
-ASSUMED_SEATED | Time for reservation has passed but reservation has not placed into one of the terminal states by the partner system (DONE, NOSHOW, CANCELED). *OpenTable will set reservations to this state as part of its daily shift maintenance.*
-DONE | The reservation has been marked as 'Done' by the in-house staff.
-NOSHOW | The diner failed to show at the restaurant.
-CANCELED | The reservation has been canceled.
 
 ## Making a new reservation
 
