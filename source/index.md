@@ -202,7 +202,7 @@ Partners can inform OpenTable of availability by pushing the available inventory
 Partners may specify multiple values for the time field in order to efficiently represent many slots that apply to the same party size.
 
 <aside class="notice">
-For this endpoints all dates and times are in restaurant local time.
+For the availability endpoint all dates and times should be sent in restaurant local time.
 </aside>
 
 ### HTTP Request
