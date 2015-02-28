@@ -207,7 +207,7 @@ For the availability endpoint all dates and times should be sent in restaurant l
 
 ### HTTP Request
 
-`PUT http://np.opentable.com/<partner_id>/availability`
+`POST http://np.opentable.com/<partner_id>/availability`
 
 ### Entity
 
