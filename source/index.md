@@ -197,9 +197,9 @@ callback_secret | The oauth secret OpenTable will use to navigate the oauth hand
 > OpenTable response :: HTTP 1.1 200 OK
 ```
 
-Partners can inform OpenTable of availability by pushing the available inventory as a list of slots; where a slot is simply a date, time, and party size that can be booked at the restaurant.
+Partners can inform OpenTable of availability by pushing the available inventory as a list of availability items; where an item is specified by a date, time, and party size that can be booked at the restaurant.
 
-Partners may specify multiple values for the time field in order to efficiently represent many slots that apply to the same party size.
+Partners specify multiple values for the time field in order to efficiently represent many items that apply to the same party size.
 
 <aside class="notice">
 For the availability endpoint all dates and times should be sent in restaurant local time.
@@ -207,14 +207,14 @@ For the availability endpoint all dates and times should be sent in restaurant l
 
 ### HTTP Request
 
-`PUT http://np.opentable.com/<partner_id>/availability`
+`POST http://np.opentable.com/<partner_id>/availability`
 
 ### Entity
 
 Member | Description
 --------- | -----------
 rid | The restaurant id. **Required**
-date | The calendar date of the bookable slot
+date | The local
 party_size | The size of the party that may be booked at the time(s) specified
 time | An arry of times that date an party size apply to. Given as offsets in minutes from midnight.
 sequence_id | The monotonically increasing message id; updated by the partner API and validated by the OpenTable API. The OpenTable services will trigger a cache refresh if messages are deemed to be missing or too far out of order. When a cache refresh is triggered the sequence id should be set to zero for both parties and the partner integration should resend all of the (100) days that will need to be re-cached by the OpenTable services. Updates within the same PUT message for the same RID should have the same sequence id. The sequence id is global across all partner restaurant ids.
