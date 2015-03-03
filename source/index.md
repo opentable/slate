@@ -199,7 +199,9 @@ callback_secret | The oauth secret OpenTable will use to navigate the oauth hand
 
 Partners can inform OpenTable of availability by pushing the available inventory as a list of availability items; where an item is specified by a date, time, and party size that can be booked at the restaurant.
 
-Partners specify multiple values for the time field in order to efficiently represent many items that apply to the same party size.
+Partners specify multiple values for the time field in order to efficiently represent many items that apply to the same party size. Every time slot that is listed will have availability set to true. All omitted times will have availability set to false implicitly.
+
+Once availability for a day and party size is posted, it can be updated by posting another availability for the same date and party size, but with different times. To remove all availability for a day, send an empty array of time.
 
 <aside class="notice">
 For the availability endpoint all dates and times should be sent in restaurant local time.
@@ -216,7 +218,7 @@ Member | Description
 rid | The restaurant id. **Required**
 date | The local
 party_size | The size of the party that may be booked at the time(s) specified
-time | An arry of times that date an party size apply to. Given as offsets in minutes from midnight.
+time | An arry of times that have availability for the provided party size. All other times are set to false implicitly. Given as offsets in minutes from midnight.
 sequence_id | The monotonically increasing message id; updated by the partner API and validated by the OpenTable API. The OpenTable services will trigger a cache refresh if messages are deemed to be missing or too far out of order. When a cache refresh is triggered the sequence id should be set to zero for both parties and the partner integration should resend all of the (100) days that will need to be re-cached by the OpenTable services. Updates within the same PUT message for the same RID should have the same sequence id. The sequence id is global across all partner restaurant ids.
 
 # Booking a Reservation
