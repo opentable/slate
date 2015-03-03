@@ -190,7 +190,7 @@ callback_secret | The oauth secret OpenTable will use to navigate the oauth hand
         "date": "2015-05-02",
         "party_size" : 3,
         "time": [420, 435],
-        "sequence_id" : 1
+        "sequence_id" : 2
       }
   ]
 ```
