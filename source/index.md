@@ -215,11 +215,11 @@ For the availability endpoint all dates and times should be sent in restaurant l
 
 Member | Description
 --------- | -----------
-rid | The restaurant id. **Required**
+rid | The restaurant id.
 date | The local
 party_size | The size of the party that may be booked at the time(s) specified
 time | An arry of times that have availability for the provided party size. All other times are set to false implicitly. Given as offsets in minutes from midnight.
-sequence_id | The monotonically increasing message id; updated by the partner API and validated by the OpenTable API. The OpenTable services will trigger a cache refresh if messages are deemed to be missing or too far out of order. When a cache refresh is triggered the sequence id should be set to zero for both parties and the partner integration should resend all of the (100) days that will need to be re-cached by the OpenTable services. Updates within the same PUT message for the same RID should have the same sequence id. The sequence id is global across all partner restaurant ids.
+sequence_id | A monotonically increasing number that is globally unique. Sequence id is used to ensure that updates are applied in the correct order.
 
 # Booking a Reservation
 
