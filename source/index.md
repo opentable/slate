@@ -179,14 +179,14 @@ callback_secret | The oauth secret OpenTable will use to navigate the oauth hand
 ```json
   [
       {
-      "rid" : "8675309",
+      "rid" : 8675309,
       "date" : "2015-05-02",
       "party_size" : 2,
       "time" : [420, 435, 450, 465],
       "sequence_id" : 1
       } ,
       {
-        "rid": "8675309",
+        "rid": 8675309,
         "date": "2015-05-02",
         "party_size" : 3,
         "time": [420, 435],
