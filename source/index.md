@@ -73,7 +73,7 @@ The Continuous Integration **(CI)** environment is used for daily automated buil
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-ci.opentable.com
-Network Partner | https://partner-api-ci.opentable.com
+Network Partner | https://restaurant-api-ci.opentable.com
 
 ## Pre-Production
 The Pre-Production **(PP)** environment is available once you are ready for final acceptance testing of your OpenTable integrations. Load testing can also be scheduled and performed in this environment.
@@ -81,7 +81,7 @@ The Pre-Production **(PP)** environment is available once you are ready for fina
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-pp.opentable.com
-Network Partner | https://partner-api-pp.opentable.com
+Network Partner | https://restaurant-api-pp.opentable.com
 
 ## Production
 The production services are the same ones accessed by the OpenTable.com web site. Your integration is live once it is communicating with the OpenTable production web services.
@@ -89,7 +89,7 @@ The production services are the same ones accessed by the OpenTable.com web site
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth.opentable.com
-Network Partner | https://partner-api.opentable.com
+Network Partner | https://restaurant-api.opentable.com
 
 <aside class="warning">Client ids need be specifically granted production access. Please contact us to request production privileges for your client id.</aside>
 
@@ -157,7 +157,7 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 
 ### URI
 
-`https://partner-api.opentable.com/api/v2/<partner_id>/restaurants`
+`https://restaurant-api.opentable.com/api/v2/<partner_id>/restaurants`
 
 ### Entity Fields
 
@@ -174,7 +174,7 @@ callback_secret | The oauth secret OpenTable will use to navigate the oauth hand
 
 ## Availability
 
-> Partner POST :: https://partner-api.opentable.opentable.com/api/v2/&lt;partner_id&gt;/availability
+> Partner POST :: https://restaurant-api.opentable.opentable.com/api/v2/&lt;partner_id&gt;/availability
 
 ```json
   [
@@ -209,7 +209,7 @@ For the availability endpoint all dates and times should be sent in restaurant l
 
 ### HTTP Request
 
-`POST https://partner-api.opentable.com/<partner_id>/availability`
+`POST https://restaurant-api.opentable.com/<partner_id>/availability`
 
 ### Entity
 
