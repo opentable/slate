@@ -235,7 +235,7 @@ For the availability endpoint all dates and times should be sent in restaurant l
 
 ### HTTP Request
 
-`GET https://restaurant-api.opentable.com/api/v1/<partner_id>/restaurants/<rid>/checkAvailability?partySize=<party size>&fromDatetime=<from>&toDatetime=<to>
+`GET https://restaurant-api.opentable.com/api/v1/<partner_id>/restaurants/<rid>/checkAvailability?partySize=<party size>&fromDatetime=<from>&toDatetime=<to>`
 
 ### Request parameters
 
