@@ -157,7 +157,7 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 
 ### URI
 
-`https://restaurant-api.opentable.com/api/v2/<partner_id>/restaurants`
+`https://restaurant-api.opentable.com/api/v1/<partner_id>/restaurants`
 
 ### Entity Fields
 
@@ -170,11 +170,11 @@ partner_oauth | The oauth service OpenTable will communicate with to obtain toke
 callback_key | The oauth key OpenTable will use to navigate the oauth handshake
 callback_secret | The oauth secret OpenTable will use to navigate the oauth handshake
 
-# Publishing Availability
+# Availability
 
-## Availability
+## Publishing Availability
 
-> Partner POST :: https://restaurant-api.opentable.opentable.com/api/v2/&lt;partner_id&gt;/availability
+> Partner POST :: https://restaurant-api.opentable.opentable.com/api/v1/&lt;partner_id&gt;/availability
 
 ```json
   [
@@ -220,6 +220,31 @@ date | The local
 party_size | The size of the party that may be booked at the time(s) specified
 time | An arry of times that have availability for the provided party size. All other times are set to false implicitly. Given as offsets in minutes from midnight.
 sequence_id | An increasing number without gaps that is unique. These properties are enforced per RID (sequence ids are independent between RIDs). Sequence id is used to ensure that updates are applied in the correct order.
+
+## Checking Availability
+
+> Partner GET :: https://restaurant-api.opentable.opentable.com/api/v1/&lt;partner_id&gt;/restaurants/&lt;rid&gt;/checkAvailability?partySize=&lt;party size&gt;&fromDatetime=&lt;from&gt;&toDatetime=&lt;to&gt;
+
+> OpenTable response :: HTTP 1.1 200 OK
+
+Availability that is published to the API will eventually appear on the consumer web site. This endpoint reflects the same availability data that OpenTable.com consumer web site uses.
+
+<aside class="notice">
+For the availability endpoint all dates and times should be sent in restaurant local time.
+</aside>
+
+### HTTP Request
+
+`GET https://restaurant-api.opentable.com//api/v1/1/restaurants/<partner_id>/checkAvailability?partySize=<party size>&fromDatetime=<from>&toDatetime=<to>
+
+### Request parameters
+
+Member | Description
+--------- | -----------
+rid | The restaurant id.
+party_size | The size of the party that may be booked at the time(s) specified
+from | starting date and time for the availability check (e.g., 2015-03-28T19:00)
+to | ending date and time for the availability check (e.g., 2015-03-28T22:15)
 
 # Booking a Reservation
 
