@@ -343,7 +343,7 @@ OpenTable will PUT a reservation update message should any of the following rese
 * Party Size
 * Reservation date and time
 
-Providers should acknowledge the PUT with a 200 and update the sequence-id with a new value in order to help protect against collisions.
+Providers should acknowledge the PUT with a 200.
 
 ### URL Detail
 
