@@ -219,7 +219,7 @@ rid | The restaurant id.
 date | The local
 party_size | The size of the party that may be booked at the time(s) specified
 time | An arry of times that have availability for the provided party size. All other times are set to false implicitly. Given as offsets in minutes from midnight.
-sequence_id | An increasing number without gaps that is unique. These properties are enforced per RID (sequence ids are independent between RIDs). Sequence id is used to ensure that updates are applied in the correct order.
+sequence_id | Sequence id is like a version number and is used to decide whether to overwrite previously received availability. When an availability update is received, the provided sequence id is compared with the highest sequence id for the combination of (rid, date, party size) that was received so far. If the new sequence id is higher, availability is updated; otherwise the update is ignored.
 
 ## Checking Availability
 
