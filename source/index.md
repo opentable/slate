@@ -149,7 +149,7 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 
 ### URI
 
-`https://restaurant-api.opentable.com/api/v1/<partner_id>/restaurants`
+`https://restaurant-api.opentable.com/api/v1/<partner_id>/restaurants/<rid>`
 
 ### Entity Fields
 
