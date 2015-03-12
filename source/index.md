@@ -135,7 +135,7 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 
 # Registering a Restaurant
 
->Partner POST :: http://np.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;
+>Partner PUT :: http://np.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;
 
 ```json
   {
@@ -153,7 +153,7 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
   }
 ```
 
-The setup entity is used to specify how the restaurant will integrate with OpenTable. This entry must be POSTed to the server prior to the partner sending any availability updates. Availability updates sent prior to the setup being POSTed will fail with an error code of 407 (unexpected).
+The setup entity is used to specify how the restaurant will integrate with OpenTable. This entry must be PUT to the server prior to the partner sending any availability updates. Availability updates sent prior to the setup being PUT will fail with an error code of 407 (unexpected).
 
 ### URI
 
@@ -164,11 +164,7 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 Member | Description
 --------- | -----------
 rid | The restaurant id. Not required
-online | If set to 'true', the restaurant will appear on the OpenTable website
 callback_url | The base url of the callback OpenTable will use to communicate with your integration
-partner_oauth | The oauth service OpenTable will communicate with to obtain tokens
-callback_key | The oauth key OpenTable will use to navigate the oauth handshake
-callback_secret | The oauth secret OpenTable will use to navigate the oauth handshake
 
 # Availability
 
