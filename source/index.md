@@ -139,19 +139,11 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 
 ```json
   {
-    "online": "true",
     "callbackURL": "http://acme.com/api/restaurants/12345"
   }
 ```
 > OpenTable resopnse :: HTTP 1.1 200 OK
 
-```json
-  {
-    "rid": "8675309",
-    "online": "true",
-    "callbackURL": "http://acme.com/api/restaurants/12345"
-  }
-```
 
 The setup entity is used to specify how the restaurant will integrate with OpenTable. This entry must be PUT to the server prior to the partner sending any availability updates. Availability updates sent prior to the setup being PUT will fail with an error code of 407 (unexpected).
 
