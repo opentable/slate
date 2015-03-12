@@ -73,7 +73,7 @@ The Continuous Integration **(CI)** environment is used for daily automated buil
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-ci.opentable.com
-Network Partner | https://np-ci.opentable.com
+Network Partner | https://restaurant-api-ci.opentable.com
 
 ## Pre-Production
 The Pre-Production **(PP)** environment is available once you are ready for final acceptance testing of your OpenTable integrations. Load testing can also be scheduled and performed in this environment.
@@ -81,7 +81,7 @@ The Pre-Production **(PP)** environment is available once you are ready for fina
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-pp.opentable.com
-Network Partner | https://np-pp.opentable.com
+Network Partner | https://restaurant-api-pp.opentable.com
 
 ## Production
 The production services are the same ones accessed by the OpenTable.com web site. Your integration is live once it is communicating with the OpenTable production web services.
@@ -89,7 +89,7 @@ The production services are the same ones accessed by the OpenTable.com web site
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth.opentable.com
-Network Partner | https://np.opentable.com
+Network Partner | https://restaurant-api.opentable.com
 
 <aside class="warning">Client ids need be specifically granted production access. Please contact us to request production privileges for your client id.</aside>
 
@@ -157,7 +157,7 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 
 ### URI
 
-`http://np.opentable.com/<partner_id>/restaurants/<rid>`
+`https://restaurant-api.opentable.com/api/v1/<partner_id>/restaurants`
 
 ### Entity Fields
 
@@ -170,36 +170,38 @@ partner_oauth | The oauth service OpenTable will communicate with to obtain toke
 callback_key | The oauth key OpenTable will use to navigate the oauth handshake
 callback_secret | The oauth secret OpenTable will use to navigate the oauth handshake
 
-# Publishing Availability
+# Availability
 
-## Availability
+## Publishing Availability
 
-> Partner POST :: http://np.opentable.com/&lt;partner_id&gt;/availability
+> Partner POST :: https://restaurant-api.opentable.opentable.com/api/v1/&lt;partner_id&gt;/availability
 
 ```json
   [
       {
-      "rid" : "8675309",
+      "rid" : 8675309,
       "date" : "2015-05-02",
       "party_size" : 2,
       "time" : [420, 435, 450, 465],
       "sequence_id" : 1
       } ,
       {
-        "rid": "8675309",
+        "rid": 8675309,
         "date": "2015-05-02",
         "party_size" : 3,
         "time": [420, 435],
-        "sequence_id" : 1
+        "sequence_id" : 2
       }
   ]
 ```
 > OpenTable response :: HTTP 1.1 200 OK
 ```
 
-Partners can inform OpenTable of availability by pushing the available inventory as a list of slots; where a slot is simply a date, time, and party size that can be booked at the restaurant.
+Partners can inform OpenTable of availability by pushing the available inventory as a list of availability items; where an item is specified by a date, time, and party size that can be booked at the restaurant.
 
-Partners may specify multiple values for the time field in order to efficiently represent many slots that apply to the same party size.
+Partners specify multiple values for the time field in order to efficiently represent many items that apply to the same party size. Every time slot that is listed will have availability set to true. All omitted times will have availability set to false implicitly.
+
+Once availability for a day and party size is posted, it can be updated by posting another availability for the same date and party size, but with different times. To remove all availability for a day, send an empty array of time.
 
 <aside class="notice">
 For the availability endpoint all dates and times should be sent in restaurant local time.
@@ -207,17 +209,42 @@ For the availability endpoint all dates and times should be sent in restaurant l
 
 ### HTTP Request
 
-`POST http://np.opentable.com/<partner_id>/availability`
+`POST https://restaurant-api.opentable.com/<partner_id>/availability`
 
 ### Entity
 
 Member | Description
 --------- | -----------
-rid | The restaurant id. **Required**
-date | The calendar date of the bookable slot
+rid | The restaurant id.
+date | The local
 party_size | The size of the party that may be booked at the time(s) specified
-time | An arry of times that date an party size apply to. Given as offsets in minutes from midnight.
-sequence_id | The monotonically increasing message id; updated by the partner API and validated by the OpenTable API. The OpenTable services will trigger a cache refresh if messages are deemed to be missing or too far out of order. When a cache refresh is triggered the sequence id should be set to zero for both parties and the partner integration should resend all of the (100) days that will need to be re-cached by the OpenTable services. Updates within the same PUT message for the same RID should have the same sequence id. The sequence id is global across all partner restaurant ids.
+time | An arry of times that have availability for the provided party size. All other times are set to false implicitly. Given as offsets in minutes from midnight.
+sequence_id | Sequence id is like a version number and is used to decide whether to overwrite previously received availability. When an availability update is received, the provided sequence id is compared with the highest sequence id for the combination of (rid, date, party size) that was received so far. If the new sequence id is higher, availability is updated; otherwise the update is ignored.
+
+## Checking Availability
+
+> Partner GET :: https://restaurant-api.opentable.opentable.com/api/v1/&lt;partner_id&gt;/restaurants/&lt;rid&gt;/checkAvailability?partySize=&lt;party size&gt;&fromDatetime=&lt;from&gt;&toDatetime=&lt;to&gt;
+
+> OpenTable response :: HTTP 1.1 200 OK
+
+Availability that is published to the API will eventually appear on the consumer web site. This endpoint reflects the same availability data that OpenTable.com consumer web site uses.
+
+<aside class="notice">
+For the availability endpoint all dates and times should be sent in restaurant local time.
+</aside>
+
+### HTTP Request
+
+`GET https://restaurant-api.opentable.com/api/v1/<partner_id>/restaurants/<rid>/checkAvailability?partySize=<party size>&fromDatetime=<from>&toDatetime=<to>`
+
+### Request parameters
+
+Member | Description
+--------- | -----------
+rid | The restaurant id.
+party_size | The size of the party that may be booked at the time(s) specified
+from | starting date and time for the availability check (e.g., 2015-03-28T19:00)
+to | ending date and time for the availability check (e.g., 2015-03-28T22:15)
 
 # Booking a Reservation
 
@@ -316,7 +343,7 @@ OpenTable will PUT a reservation update message should any of the following rese
 * Party Size
 * Reservation date and time
 
-Providers should acknowledge the PUT with a 200 and update the sequence-id with a new value in order to help protect against collisions.
+Providers should acknowledge the PUT with a 200.
 
 ### URL Detail
 
