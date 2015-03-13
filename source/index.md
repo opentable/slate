@@ -155,7 +155,6 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 
 Member | Description
 --------- | -----------
-rid | The restaurant id. Not required
 callback_url | The base url of the callback OpenTable will use to communicate with your integration
 
 # Availability
