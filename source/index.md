@@ -139,7 +139,7 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 
 ```json
   {
-    "callbackURL": "http://acme.com/api/restaurants/12345"
+    "partner_restaurant_id": 12345
   }
 ```
 > OpenTable resopnse :: HTTP 1.1 200 OK
@@ -155,7 +155,7 @@ The setup entity is used to specify how the restaurant will integrate with OpenT
 
 Member | Description
 --------- | -----------
-callback_url | The base url of the callback OpenTable will use to communicate with your integration
+partner_restaurant_id | Restaurant id as defined by the partner system
 
 # Availability
 
