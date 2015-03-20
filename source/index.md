@@ -235,8 +235,57 @@ to | ending date and time for the availability check (e.g., 2015-03-28T22:15)
 
 # Booking a Reservation
 
-## Reservation
 The partner data store is considered the source of truth for reservation information. Reservations cannot be created, changed, or canceled without first being communicated to the partner's api endpoints. OpenTable will always sek to make a reservation with a lock id specified. The lock id may refer to an ephemeral lock that has been discarded. In these cases OpenTable expects the partner api to attempt to book the reservation an a 'best efforts' basis as the underlying inventory may have been taken by another diner.
+
+## Locking a Reservation
+
+> OpenTable POST :: https://&lt;partner_callback_url&gt;/locks
+
+```json
+  {
+    "rid": 1,
+    "date": "2015-02-18T18:15",
+    "party_size": 2,
+    "expiration_seconds": 180,
+    "turn_time_minutes": 90
+  }
+```
+
+> Partner response
+
+```json
+  {
+    "lock_id": "44c32488-d595-48e7-beae-379aa28bcee1", //assigned_by_partner
+    "rid": 1,
+    "date": "2015-02-18T18:15",
+    "party_size": 2,
+    "expiration_seconds": 180,
+    "turn_time_minutes": 90
+  }
+```
+
+This endpoint is called to reserve inventory while the diner completes the reservation process. The channel inventory system must hold the inventory booking until the expiration date is reached. If the expiration date is reached and the lock has not been cancelled then the underlying inventory can be released and used for other reservations.
+
+### Entity
+
+Parameter | Required | Description
+--------- | ------- | -----------
+rid | Yes | The restaurant id
+lock_id | Yes | The id of the lock. This is assigned by the partner system and **must be globally unique**.
+date | Yes | The local start date and time of the reservation
+party_size | Yes | The size of the party the booking is for
+expiration_seconds | No | Number of seconds until the lock expires
+turn_time_minutes | No | The length of time the reservation will be made for. This value is given in minutes.
+
+## Making a reservation
+
+OpenTable will call the partner API whenever a diner is attempting to book a reservation. OpenTable will call the **lock** API prior to booking a reservation via a POST to the reservation entity. 
+
+Other points of note:
+
+* The href field in the reservation supplied by OpenTable when booking the reservation will remain valid only if OpenTable receives a valid response to its POST call to the reservation endpoint.
+* The res_id field MUST be populated and returned by the partner API if the reservation is created in the partner's reservation system.
+* Should there be a communication break prior ro OpenTable receiving a 201 (or other) response then OpenTable will attempt at least one retry to create the reservation. The retry attempt will have the same unique href as was specified in the first attempt at reservation creation.
 
 ### Entity
 Member | Description
@@ -266,56 +315,6 @@ ASSUMED_SEATED | Time for reservation has passed but reservation has not placed 
 DONE | The reservation has been marked as 'Done' by the in-house staff.
 NOSHOW | The diner failed to show at the restaurant.
 CANCELED | The reservation has been canceled.
-
-## Locking a Reservation
-
-> OpenTable POST :: https://&lt;partner_callback_url&gt;/locks
-
-```json
-  {
-    "rid": 1,
-    "date": "2015-02-18T18:15:00Z",
-    "covers": "calico",
-    "expiration_seconds": 180,
-    "turn_time_minutes": 90
-  }
-```
-
-> Partner response
-
-```json
-  {
-    "lock_id": "a192810120212", //assigned_by_partner
-    "rid": 1,
-    "date": "2015-02-18T18:15:00Z",
-    "covers": "calico",
-    "expiration_seconds": 180,
-    "turn_time_minutes": 90
-  }
-```
-
-This endpoint is called to reserve inventory while the diner completes the reservation process. The channel inventory system must hold the inventory booking until the expiration date is reached. If the expiration date is reached and the lock has not been cancelled then the underlying inventory can be released and used for other reservations.
-
-### Entity
-
-Parameter | Required | Description
---------- | ------- | -----------
-rid | Yes | The restaurant id
-lock_id | Yes | The id of the lock. This is assigned by the partner system and **must be globally unique**.
-date | Yes | The UTC start date and time of the reservation
-covers | Yes | The size of the party the booking is for
-expiration_seconds | No | Number of seconds until the lock expires
-turn_time_minutes | No | The length of time the reservation will be made for. This value is given in minutes.
-
-## Making a new reservation
-
-OpenTable will call the partner API whenever a diner is attempting to book a reservation. OpenTable will call the **lock** API prior to booking a reservation via a POST to the reservation entity. 
-
-Other points of note:
-
-* The href field in the reservation supplied by OpenTable when booking the reservation will remain valid only if OpenTable receives a valid response to its POST call to the reservation endpoint.
-* The res_id field MUST be populated and returned by the partner API if the reservation is created in the partner's reservation system.
-* Should there be a communication break prior ro OpenTable receiving a 201 (or other) response then OpenTable will attempt at least one retry to create the reservation. The retry attempt will have the same unique href as was specified in the first attempt at reservation creation.
 
 ### URL Detail
 
