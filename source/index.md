@@ -113,7 +113,7 @@ To request developer access, [send us an email](mailto:dchornyi@opentable.com). 
 
 ```json
     {
-        "access_token": "a1c7b724-0a20-42be-9dd4-23d873db1f9b")",
+        "access_token": "a1c7b724-0a20-42be-9dd4-23d873db1f9b",
         "token_type": "bearer",
         "expires_in": 2419181,
         "scope": "DEFAULT"
