@@ -17,7 +17,7 @@ search: true
 
 # Welcome
 
-Welcome to the [OpenTable](http://www.opentable.com) Developer's Guide. This guide is will show you how to integrate with OpenTable's APIs to manage your restaurants, reservations, and inventory.
+Welcome to the [OpenTable](https://www.opentable.com) Developer's Guide. This guide is will show you how to integrate with OpenTable's APIs to manage your restaurants, reservations, and inventory.
 
 # Getting Started
 
@@ -107,7 +107,7 @@ To request developer access, [send us an email](mailto:dchornyi@opentable.com). 
 
 ## Obtaining an Access Token
 
-> POST :: http://oauth.opentable.com/api/v2/oauth/token?grant_type=client_credentials
+> POST :: https://oauth.opentable.com/api/v2/oauth/token?grant_type=client_credentials
 
 > OpenTable response :: HTTP 1.1 200 OK
 
@@ -124,7 +124,7 @@ Clients can obtain an access token using the [OAuth 2.0 client credentials flow]
 
 ### URI
 
-`http://oauth.opentable.com/api/v2/oauth/token?grant_type=client_credentials`
+`https://oauth.opentable.com/api/v2/oauth/token?grant_type=client_credentials`
 
 ### Request Parameters
 
@@ -177,7 +177,7 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 
 # Registering a Restaurant
 
->Partner PUT :: http://np.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;
+>Partner PUT :: https://np.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;
 
 ```json
   {
