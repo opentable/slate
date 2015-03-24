@@ -95,15 +95,19 @@ Network Partner | https://restaurant-api.opentable.com
 
 # Authorization
 
+OpenTable uses [OAuth 2.0](https://tools.ietf.org/html/rfc6749) to authorize access to protected resources. Authorization involves following steps:
+
+* Request client id and secret
+* Obtain an access token using the issued client credentials
+* Use the access token to access protected resources
+
 ## Requesting a Client Id
 
 To request developer access, [send us an email](mailto:dchornyi@opentable.com). Self-registration will be available soon.
 
-## Obtaining a Token
+## Obtaining an Access Token
 
-### Submitting Client Credentials
-
-> GET :: http://oauth.opentable.com/api/v2/oauth/token?grant_type=client_credentials
+> POST :: http://oauth.opentable.com/api/v2/oauth/token?grant_type=client_credentials
 
 > OpenTable response :: HTTP 1.1 200 OK
 
@@ -116,6 +120,20 @@ To request developer access, [send us an email](mailto:dchornyi@opentable.com). 
     }
 ```
 
+Clients can obtain an access token using the [OAuth 2.0 client credentials flow](https://tools.ietf.org/html/rfc6749#section-4.4).
+
+### URI
+
+`http://oauth.opentable.com/api/v2/oauth/token?grant_type=client_credentials`
+
+### Request Parameters
+
+Member | Description
+--------- | -----------
+grant_type | OAuth grant type. Should be "client_credentials"
+
+### Submitting Client Credentials
+
 Client credentials are submitted in the `Authorization` header as defined in the [OAuth spec](https://tools.ietf.org/html/rfc6749#section-2.3).
 Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"), you need to do the following:
 
@@ -127,11 +145,35 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 
 > Authorization: bearer ba4a443d-3cc2-4472-9a92-e2347f1f5cf1
 
-1. [Obtain an access token](#obtaining-a-token)
+1. [Obtain an access token](#obtaining-an-access-token)
 2. Set the header "Authorization: bearer <result from step 1>" (e.g., "Authorization: bearer a1c7b724-0a20-42be-9dd4-23d873db1f9b")
 3. Send the request
     a. If the token is valid and not expired, an appropriate response from the resource server will be returned.
     b. If the token is not valid, the resource server responds using the appropriate HTTP status code (typically, 400, 401, 403, or 405) and an error code [https://tools.ietf.org/html/rfc6750#section-3.1](https://tools.ietf.org/html/rfc6750#section-3.1)
+
+### Responses
+
+> OpenTable Response :: HTTP 1.1 400 Bad Request
+
+```json
+    {
+        "error": "invalid_request",
+        "message": "oauth token is required to access this resource"
+    }
+```
+
+> OpenTable Response :: HTTP 1.1 401 Unauthorized
+
+```json
+    {
+        "error": "invalid_token",
+        "message": "b7721d39-65f6-4b6a-8686-3af5246e5b3a"
+    }
+```
+
+If the access token is present and valid, an appropriate response will be returned by the resource server.
+If the access token is missing HTTP 400 Bad Request is returned.
+If the access token is invalid or expired HTTP 401 Unauthorized is returned.
 
 # Registering a Restaurant
 
