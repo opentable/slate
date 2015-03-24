@@ -113,7 +113,7 @@ To request developer access, [send us an email](mailto:dchornyi@opentable.com). 
 
 ```json
     {
-        "access_token": "ba4a443d-3cc2-4472-9a92-e2347f1f5cf1",
+        "access_token": "a1c7b724-0a20-42be-9dd4-23d873db1f9b")",
         "token_type": "bearer",
         "expires_in": 2419181,
         "scope": "DEFAULT"
@@ -143,7 +143,7 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 
 ## Authorizing Requests
 
-> Authorization: bearer ba4a443d-3cc2-4472-9a92-e2347f1f5cf1
+> Authorization: bearer a1c7b724-0a20-42be-9dd4-23d873db1f9b")
 
 1. [Obtain an access token](#obtaining-an-access-token)
 2. Set the header "Authorization: bearer <result from step 1>" (e.g., "Authorization: bearer a1c7b724-0a20-42be-9dd4-23d873db1f9b")
@@ -171,9 +171,9 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
     }
 ```
 
-If the access token is present and valid, an appropriate response will be returned by the resource server.
-If the access token is missing HTTP 400 Bad Request is returned.
-If the access token is invalid or expired HTTP 401 Unauthorized is returned.
+* If the access token is present and valid, an appropriate response will be returned by the resource server.
+* If the access token is missing HTTP 400 Bad Request is returned.
+* If the access token is invalid or expired HTTP 401 Unauthorized is returned.
 
 # Registering a Restaurant
 
