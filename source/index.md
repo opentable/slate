@@ -297,7 +297,7 @@ The partner data store is considered the source of truth for reservation informa
 
 ```json
   {
-    "lock_id": "44c32488-d595-48e7-beae-379aa28bcee1", //assigned_by_partner
+    "lock_id": 965665360, //assigned_by_partner
     "rid": 1,
     "date": "2015-02-18T18:15",
     "party_size": 2,
@@ -313,7 +313,7 @@ This endpoint is called to reserve inventory while the diner completes the reser
 Parameter | Required | Description
 --------- | ------- | -----------
 rid | Yes | The restaurant id
-lock_id | Yes | The id of the lock. This is assigned by the partner system and **must be globally unique**.
+lock_id | Yes | The id of the lock. Must be a number. This is assigned by the partner system and **must be globally unique**.
 date | Yes | The local start date and time of the reservation
 party_size | Yes | The size of the party the booking is for
 expiration_seconds | No | Number of seconds until the lock expires
