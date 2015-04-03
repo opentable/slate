@@ -323,27 +323,65 @@ turn_time_minutes | No | The length of time the reservation will be made for. Th
 
 OpenTable will call the partner API whenever a diner is attempting to book a reservation. OpenTable will call the **lock** API prior to booking a reservation via a POST to the reservation entity. 
 
+> Opentable POST :: https://&ltpartner_api&gt
+
+```
+{
+  "rid": 888,
+  "date_time": "2013-05-09T18:00",
+  "party_size": 4,
+  "guest": {
+    "gpid": 987,
+    "first_name": "Ernest",
+    "last_name": "Rivas",
+    "email": "erivas@abc.com",
+    "phone": {
+      "number": "555.666.7777",
+      "type": "Mobile",
+      "country_code": 1
+    }
+  },
+  "guest_reso_notes": "Red red wine",
+  "web_reso_notes": "web notes",
+  "slot_lock_id": 965665360
+}
+```
+
+> Partner Response
+
+```
+{
+  "confirmation_number": 1,
+  "rid": 888,
+  "date_time": "2013-05-09T18:00",
+  "party_size": 4
+}
+```
+
 Other points of note:
 
 * The href field in the reservation supplied by OpenTable when booking the reservation will remain valid only if OpenTable receives a valid response to its POST call to the reservation endpoint.
 * The res_id field MUST be populated and returned by the partner API if the reservation is created in the partner's reservation system.
 * Should there be a communication break prior ro OpenTable receiving a 201 (or other) response then OpenTable will attempt at least one retry to create the reservation. The retry attempt will have the same unique href as was specified in the first attempt at reservation creation.
 
-### Entity
+### Entity (yet to determine which are optional)
 Member | Description
 --------- | -----------
 rid | The rid that this reservation is assigned to
-href | The href that can be used to retrieve the reservation details from OpenTable
+?href | The href that can be used to retrieve the reservation details from OpenTable
 lock_id | **Optional.** The id of the inventory lock acquired for this reservation.
-res_id | The id of the reservation. *This will be empty on creation and must be provided by the partner*
-res_date | The UTC date and time for which the reservation was made
-res_state | This value must be One of the OpenTable RESERVATION STATES *(see below)*. The default state for a new reservation is BOOKED.
+confirmation_number | Confirmation number for the reservation.
+slot_lock_id | lock id for the reservation
+date_time | Datetime of the reservation.
 party_size | The party size of the reservation
-diner_name | The first and last name of the diner
-diner_phone | **Optional.** The phone number for the diner for this reservation
-diner_email | **Optional.** The email address of the diner. This field will only be present if the diner has opted into email marketing for OpenTable.
-diner_notes | **Optional.**  Notes submitted by the diner along with this reservation
-diner_tags | **Optional.** Array of OpenTable specific diner tags
+first_name | The first name of the diner
+last_name | The last name of the diner
+number | **Optional.** The phone number for the diner for this reservation
+type | **Optional.** The phone type for the diner for this reservation
+country_code | **Optional.** The phone type for the diner for this reservation
+email | **Optional.** The email address of the diner. This field will only be present if the diner has opted into email marketing for OpenTable.
+web_reso_notes | **Optional.**  Notes submitted by the diner along with this reservation
+guest_reso_notes | **Optional.**
 
 ### Reservation States
 
