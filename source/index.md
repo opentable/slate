@@ -343,7 +343,7 @@ OpenTable will call the partner API whenever a diner is attempting to book a res
   },
   "guest_reso_notes": "Red red wine",
   "web_reso_notes": "web notes",
-  "slot_lock_id": 965665360
+  "lock_id": 965665360
 }
 ```
 
@@ -371,7 +371,7 @@ rid | The rid that this reservation is assigned to
 ?href | The href that can be used to retrieve the reservation details from OpenTable
 lock_id | **Optional.** The id of the inventory lock acquired for this reservation.
 confirmation_number | Confirmation number for the reservation.
-slot_lock_id | lock id for the reservation
+lock_id | lock id for the reservation
 date_time | Datetime of the reservation.
 party_size | The party size of the reservation
 first_name | The first name of the diner
