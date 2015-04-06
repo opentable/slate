@@ -254,6 +254,28 @@ sequence_id | Sequence id is like a version number and is used to decide whether
 
 > Partner GET :: https://restaurant-api.opentable.opentable.com/api/v1/&lt;partner_id&gt;/restaurants/&lt;rid&gt;/checkAvailability?partySize=&lt;party size&gt;&fromDatetime=&lt;from&gt;&toDatetime=&lt;to&gt;
 
+```json
+  [
+      {
+          "Rid": 123456,
+          "IsAvailable": false,
+          "SequenceNumber": 1109,
+          "Time": "2015-05-02T07:00:00"
+      },
+      {
+          "Rid": 123456,
+          "IsAvailable": false,
+          "SequenceNumber": 1109,
+          "Time": "2015-05-02T07:15:00"
+      },
+      {
+          "Rid": 123456,
+          "IsAvailable": false,
+          "SequenceNumber": 1109,
+          "Time": "2015-05-02T07:30:00"
+      }
+  ]
+```
 > OpenTable response :: HTTP 1.1 200 OK
 
 Availability that is published to the API will eventually appear on the consumer web site. This endpoint reflects the same availability data that OpenTable.com consumer web site uses.
