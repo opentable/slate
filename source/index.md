@@ -424,6 +424,41 @@ CANCELED | The reservation has been canceled.
 
 # Exchanging Reservation Updates
 
+> Opentable POST :: https://&ltpartner_api&gt
+
+```
+{
+  "rid": 888,
+  "date_time": "2013-05-09T18:00",
+  "party_size": 4,
+  "guest": {
+    "gpid": 987,
+    "first_name": "Ernest",
+    "last_name": "Rivas",
+    "email": "erivas@abc.com",
+    "phone": {
+      "number": "555.666.7777",
+      "type": "Mobile",
+      "country_code": 1
+    }
+  },
+  "guest_reso_notes": "Red red wine",
+  "web_reso_notes": "web notes",
+  "confirmation_number": 556
+}
+```
+
+> Partner Response
+
+```
+{
+  "confirmation_number": 556,
+  "rid": 888,
+  "date_time": "2013-05-09T18:00",
+  "party_size": 4
+}
+```
+
 ## Receiving Updates from OpenTable
 
 OpenTable will PUT a reservation update message should any of the following reservation fields change.
