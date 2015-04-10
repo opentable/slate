@@ -489,9 +489,11 @@ Opentable will POST a cancel  reservation message, containing the RID and confir
   "rid": 888,
   "confirmation_number": 1
 }
+```
 
 > Partner Response
 
+```
 {
   "rid": 888,
   "confirmation_number": 1
