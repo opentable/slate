@@ -483,7 +483,8 @@ See [Reservations](#reservation)
 Opentable will POST a cancel  reservation message, containing the RID and confirmation_number of the reservation.
 
 > Opentable POST :: https://&ltpartner_api&gt
-````
+
+```
 {
   "rid": 888,
   "confirmation_number": 1
