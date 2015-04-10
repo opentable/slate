@@ -478,6 +478,25 @@ See [Reservations](#reservation)
 
 <aside class="warning">Reservations cannot be moved across restaurants or systems. In order to move a reservation it must first be cancelled and then a new one made in the target restaurant.</aside>
 
+##Receiving Cancels From Opentable
+
+Opentable will POST a cancel  reservation message, containing the RID and confirmation_number of the reservation.
+
+> Opentable POST :: https://&ltpartner_api&gt
+````
+{
+  "rid": 888,
+  "confirmation_number": 1
+}
+
+> Partner Response
+
+{
+  "rid": 888,
+  "confirmation_number": 1
+}
+```
+
 ## Sending Updates to OpenTable
 
 Partner systems should perform a PUT to the OpenTable reservation system should any of the following reservation fields change.
