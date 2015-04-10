@@ -424,6 +424,10 @@ CANCELED | The reservation has been canceled.
 
 # Exchanging Reservation Updates
 
+## Receiving Updates from OpenTable
+
+OpenTable will PUT a reservation update message should any of the following reservation fields change.
+
 > Opentable POST :: https://&ltpartner_api&gt
 
 ```
@@ -458,10 +462,6 @@ CANCELED | The reservation has been canceled.
   "party_size": 4
 }
 ```
-
-## Receiving Updates from OpenTable
-
-OpenTable will PUT a reservation update message should any of the following reservation fields change.
 
 * Party Size
 * Reservation date and time
