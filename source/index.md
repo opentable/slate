@@ -538,11 +538,15 @@ These API's act as the entry point from the consumer's side when making a reserv
 }
 ```
 
-###Entity
+###Request Entity
+Member | Type | Description | Usage
+------- | ---- |---------
+ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm" | Required
+PartySize | integer | Size of dining party | Required
+
+###Response Entity
 Member | Type | Description
 ------- | ---- |---------
-ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm"
-PartySize | integer | Size of dining party
 restaurantId | integer | The unique ID of the restaurant (RID)
 statusCode | integer | 0 denotes success, positive value denotes failure
 statusMessage | integer | Either "Success" or "Error"
@@ -601,16 +605,17 @@ Status Code | Description
 ```
 
 ###Request Entity
-Member | Type | Description
+Member | Type | Description | Usage
 ------- | ---- |---------
-ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm"
-PartySize | integer | Size of dining party
-SlotLockId | integer | Numeric slot lock id which can be used to make a booking subsequently
-UserGpid | long | Global Person Id of the website user.
-DinerGpid | long | Global Person Id of the diner.  *Either DinerGpid or DinerCallerCustomerId (below) is required.
-DinerCallerCustomerId | integer | If this is a caller-created reservation, this is the cust id of the diner. 
-DinerPhone | struct | Contact phone for the diner.  Contains the string-valued fields PhoneNumber, CountryId, and PhoneType. CountryId is a standard 2 letter country abbreviation – e.g., "BR" for Brazil. PhoneType is either "Home", "Work", or "Mobile".
-PointsType | string | Either "POP", "Standard", or "None" (one of the PointsType values returned by the availability service.) This is used to specify the maximum allowed points for the reservation. Note that it may not be possible for the service to award the maximum points; For example, if PointsType = "POP" but the reservation time is not POP, standard points are awarded.
+ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm" | Required
+PartySize | integer | Size of dining party | Required
+SlotLockId | integer | Numeric slot lock id which can be used to make a booking subsequently | Required
+UserGpid | long | Global Person Id of the website user. | Required
+DinerGpid | long | Global Person Id of the diner.  *Either DinerGpid or DinerCallerCustomerId (below) is required. | Required
+DinerCallerCustomerId | integer | If this is a caller-created reservation, this is the cust id of the diner. | Required
+DinerPhone | struct | Contact phone for the diner.  Contains the string-valued fields PhoneNumber, CountryId, and PhoneType. CountryId is a standard 2 letter country abbreviation – e.g., "BR" for Brazil. PhoneType is either "Home", "Work", or "Mobile". | Required
+PointsType | string | Either "POP", "Standard", or "None" (one of the PointsType values returned by the availability service.) This is used to specify the maximum allowed points for the reservation. Note that it may not be possible for the service to award the maximum points; For example, if PointsType = "POP" but the reservation time is not POP, standard points are awarded. | Required
+DinerReservationNotes | string | Notes from the diner to the restaurant. | Required
 
 ###Response Entity
 Member | Type | Description
