@@ -510,3 +510,53 @@ Partner systems should perform a PUT to the OpenTable reservation system should 
 ### URL Detail
 
 `OpenTable href for the reservation. Please see reservation schema.`
+
+#Integration Testing
+These API's act as the entry point from the consumer's side when making a reservation.
+
+##Locking a Reservation
+
+> POST :: /reservation/v1/restaurants/<rid>/slotlocks
+```
+{
+  "ReservationDateTime"  : "2015-04-18T19:30",
+  "PartySize" : 10
+ }
+ ```
+
+ > Response
+```
+{
+statusCode: 0
+statusMessage: "Success"
+restaurantId: 117784
+reservationDateTime: "2015-04-18T19:30"
+partySize: 10
+slotLockId: 667520417
+offerSlotLockId: 0
+errorMessage: null
+}
+```
+
+###Entity
+Member | Type | Description
+------- | ---- |---------
+ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm"
+PartySize | integer | Size of dining party
+restaurantId | integer | The unique ID of the restaurant (RID)
+statusCode | integer | 0 denotes success, positive value denotes failure
+statusMessage | integer | Either "Success" or "Erorr"
+slotLockId | integer | Numeric slot lock id which can be used to make a booking subsequently
+offerSlotLockId | integer | Defaults to 0, can be ignored
+errorMessage | string | Detailed error message if exists
+
+###Response Status Codes
+Status Code | Description
+----------- | -----------
+200 | Successfull
+404 | Not found
+409 | Conflict
+
+
+
+
