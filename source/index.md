@@ -527,14 +527,14 @@ These API's act as the entry point from the consumer's side when making a reserv
  > Response
 ```
 {
-statusCode: 0
-statusMessage: "Success"
-restaurantId: 117784
-reservationDateTime: "2015-04-18T19:30"
-partySize: 10
-slotLockId: 667520417
-offerSlotLockId: 0
-errorMessage: null
+  statusCode: 0
+  statusMessage: "Success"
+  restaurantId: 117784
+  reservationDateTime: "2015-04-18T19:30"
+  partySize: 10
+  slotLockId: 667520417
+  offerSlotLockId: 0
+  errorMessage: null
 }
 ```
 
@@ -545,7 +545,7 @@ ReservationDateTime | string | ISO format Date and Time string in the form: "YYY
 PartySize | integer | Size of dining party
 restaurantId | integer | The unique ID of the restaurant (RID)
 statusCode | integer | 0 denotes success, positive value denotes failure
-statusMessage | integer | Either "Success" or "Erorr"
+statusMessage | integer | Either "Success" or "Error"
 slotLockId | integer | Numeric slot lock id which can be used to make a booking subsequently
 offerSlotLockId | integer | Defaults to 0, can be ignored
 errorMessage | string | Detailed error message if exists
@@ -553,10 +553,78 @@ errorMessage | string | Detailed error message if exists
 ###Response Status Codes
 Status Code | Description
 ----------- | -----------
-200 | Successfull
+200 | Successful
 404 | Not found
 409 | Conflict
 
+##Making a Reservation
 
+> POST  :: /reservation/v1/restaurants/<rid>/reservations
+```
+{
+  "ReservationDateTime" : "2014-03-01T19:00",
+  "PartySize" : 2,
+  "SlotLockId" : 123,
+  "UserGpid" : 130033826163,
+  "DinerGpid" : 130033826163,
+  "DinerCallerCustomerId" : 0,
+  "DinerReservationNotes" : "special birthday dinner",
+  "DinerPhone" : {
+    "PhoneNumber" : "2123134114",
+    "CountryId" : "BR",
+    "PhoneType" : "Mobile"
+  },
+  "PointsType" : "POP",
+}
+```
 
+> Response
+```
 
+{
+  statusCode: 0,
+  statusMessage: "Success",
+  restaurantId: 95152,
+  reservationDateTime: "2014-03-02T19:00",
+  partySize: 2,
+  confirmationNumber: 2252511,
+  offerConfirmationNumber: 0,
+  points: 1000,
+  pointsRule: "DIPAwardedPoints",
+  violations: [],
+  sameDayCutoff: null,
+  earlyCutoff: null,
+  overlappingReservations: [],
+  errorMessage: null,
+  securityToken: "01h-RR0vBzpeI8jkYhsNNPOnrNF9Q1"
+}
+```
+
+###Request Entity
+Member | Type | Description
+------- | ---- |---------
+ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm"
+PartySize | integer | Size of dining party
+SlotLockId | integer | Numeric slot lock id which can be used to make a booking subsequently
+UserGpid | long | Global Person Id of the website user.
+DinerGpid | long | Global Person Id of the diner.  *Either DinerGpid or DinerCallerCustomerId (below) is required.
+DinerCallerCustomerId | integer | If this is a caller-created reservation, this is the cust id of the diner. 
+DinerPhone | struct | Contact phone for the diner.  Contains the string-valued fields PhoneNumber, CountryId, and PhoneType. CountryId is a standard 2 letter country abbreviation – e.g., "BR" for Brazil. PhoneType is either "Home", "Work", or "Mobile".
+PointsType | string | Either "POP", "Standard", or "None" (one of the PointsType values returned by the availability service.) This is used to specify the maximum allowed points for the reservation. Note that it may not be possible for the service to award the maximum points; For example, if PointsType = "POP" but the reservation time is not POP, standard points are awarded.
+
+###Response Entity
+Member | Type | Description
+------- | ---- |---------
+statusCode | integer | 0 denotes success, positive value denotes failure
+statusMessage | integer | Either "Success" or "Error"
+restaurantId | integer | The unique ID of the restaurant (RID)
+offerSlotLockId | integer | Defaults to 0, can be ignored
+errorMessage | string | Detailed error message if exists
+confirmationNumber |integer | numeric identifier for the reservation
+
+###Response Status Codes
+Status Code | Description
+----------- | -----------
+201 | Created, Successful
+404 | Not found
+409 | Conflict
