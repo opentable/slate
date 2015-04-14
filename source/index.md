@@ -529,13 +529,13 @@ These API's act as the entry point from the consumer's side when making a reserv
 
 ```
 {
-  "statusCode": 0
-  "statusMessage": "Success"
-  "restaurantId": 117784
-  "reservationDateTime": "2015-04-18T19:30"
-  "partySize": 10
-  "slotLockId": 667520417
-  "offerSlotLockId": 0
+  "statusCode": 0,
+  "statusMessage": "Success",
+  "restaurantId": 117784,
+  "reservationDateTime": "2015-04-18T19:30",
+  "partySize": 10,
+  "slotLockId": 667520417,
+  "offerSlotLockId": 0,
   "errorMessage": null
 }
 ```
