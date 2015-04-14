@@ -724,7 +724,7 @@ Status Code | Description
     "CountryId" : "BR",
     "PhoneType" : "Mobile"
   },
-  "PointsType" : "POP",
+  "PointsType" : "POP"
 }
 ```
 
