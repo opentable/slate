@@ -521,10 +521,10 @@ These API's act as the entry point from the consumer's side when making a reserv
 {
   "ReservationDateTime"  : "2015-04-18T19:30",
   "PartySize" : 10
- }
- ```
+}
+```
 
- > Response
+> Response
 ```
 {
   statusCode: 0
@@ -564,6 +564,7 @@ Status Code | Description
 ##Making a Reservation
 
 > POST  :: /reservation/v1/restaurants/<rid>/reservations
+
 ```
 {
   "ReservationDateTime" : "2014-03-01T19:00",
@@ -584,7 +585,6 @@ Status Code | Description
 
 > Response
 ```
-
 {
   statusCode: 0,
   statusMessage: "Success",
