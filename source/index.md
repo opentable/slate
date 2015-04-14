@@ -537,6 +537,9 @@ These API's act as the entry point from the consumer's side when making a reserv
   errorMessage: null
 }
 ```
+###Request URL Parameters
+**rid**: The unique ID of the restaurant
+
 
 ###Request Entity
 Member | Type | Description | Usage
@@ -604,6 +607,9 @@ Status Code | Description
 }
 ```
 
+###Request URL Parameters
+**rid**: The unique ID of the restaurant
+
 ###Request Entity
 Member | Type | Description | Usage
 ------- | ---- |---------
@@ -658,6 +664,10 @@ Status Code | Description
   errorMessage: null
  }
  ```
+
+###Request URL Parameters
+**rid**: The unique ID of the restaurant
+**confirmation_number**: Numeric reservation identifier
 
 ###Request Entity
 Member | Type | Description | Usage
@@ -724,6 +734,10 @@ Status Code | Description
   securityToken: "01h-RR0vBzpeI8jkYhsNNPOnrNF9Q1"
 }
 ```
+
+###Request URL Parameters
+**rid**: The unique ID of the restaurant
+**confirmation_number**: Numeric reservation identifier
 
 ###Request Entity
 Member | Type | Description | Usage
