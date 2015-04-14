@@ -633,3 +633,50 @@ Status Code | Description
 201 | Created, Successful
 404 | Not found
 409 | Conflict
+
+##Canceling a Reservation
+
+> PUT /reservation/v1/restaurants/<rid>/confirmations/<confirmation_number>
+```
+{
+  "ReservationState" : "Canceled"
+}
+```
+
+> Response
+```
+
+{
+  statusCode: 0,
+  statusMessage: "Success",
+  restaurantId: 95152,
+  confirmationNumber: 2252511,
+  offerConfirmationNumber: 0,
+  violations: [],
+  sameDayCutoff: null,
+  earlyCutoff: null,
+  errorMessage: null
+ }
+ ```
+
+###Request Entity
+Member | Type | Description | Usage
+------- | ---- |---------
+ReservationState | string | The string "Canceled". | Required 
+
+###Response Entity
+Member | Type | Description
+------- | ---- |---------
+statusCode | integer | 0 denotes success, positive value denotes failure
+statusMessage | integer | Either "Success" or "Error"
+restaurantId | integer | The unique ID of the restaurant (RID)
+confirmationNumber |integer | numeric identifier for the reservation
+errorMessage | string | Detailed error message if exists
+
+###Response Status Codes
+Status Code | Description
+----------- | -----------
+200 | Successful
+204 | No Content - Reservation already canceled.
+404 | Not found - Reservation does not exist
+409 | Conflict
