@@ -546,7 +546,7 @@ These API's act as the entry point from the consumer's side when making a reserv
 ###Request Entity
 
 Member | Type | Description | Usage
-------- | ---- |---------
+------- | ---- |------------ | -----
 ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm" | Required
 PartySize | integer | Size of dining party | Required
 
@@ -619,7 +619,7 @@ Status Code | Description
 ###Request Entity
 
 Member | Type | Description | Usage
-------- | ---- |---------
+------- | ---- |------------ | -----
 ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm" | Required
 PartySize | integer | Size of dining party | Required
 SlotLockId | integer | Numeric slot lock id which can be used to make a booking subsequently | Required
@@ -683,7 +683,7 @@ Status Code | Description
 
 ###Request Entity
 Member | Type | Description | Usage
-------- | ---- |---------
+------- | ---- |------------ | -----
 ReservationState | string | The string "Canceled". | Required 
 
 ###Response Entity
@@ -758,7 +758,7 @@ Status Code | Description
 ###Request Entity
 
 Member | Type | Description | Usage
-------- | ---- |---------
+------- | ---- |------------ | -----
 ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm" | Required
 PartySize | integer | Size of dining party | Required
 SlotLockId | integer | Numeric slot lock id which can be used to make a booking subsequently | Required
