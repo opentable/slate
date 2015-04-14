@@ -544,12 +544,14 @@ These API's act as the entry point from the consumer's side when making a reserv
 
 
 ###Request Entity
+
 Member | Type | Description | Usage
 ------- | ---- |---------
 ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm" | Required
 PartySize | integer | Size of dining party | Required
 
 ###Response Entity
+
 Member | Type | Description
 ------- | ---- |---------
 restaurantId | integer | The unique ID of the restaurant (RID)
@@ -560,6 +562,7 @@ offerSlotLockId | integer | Defaults to 0, can be ignored
 errorMessage | string | Detailed error message if exists
 
 ###Response Status Codes
+
 Status Code | Description
 ----------- | -----------
 200 | Successful
@@ -614,6 +617,7 @@ Status Code | Description
 **rid**: The unique ID of the restaurant
 
 ###Request Entity
+
 Member | Type | Description | Usage
 ------- | ---- |---------
 ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm" | Required
@@ -627,6 +631,7 @@ PointsType | string | Either "POP", "Standard", or "None" (one of the PointsType
 DinerReservationNotes | string | Notes from the diner to the restaurant. | Required
 
 ###Response Entity
+
 Member | Type | Description
 ------- | ---- |---------
 statusCode | integer | 0 denotes success, positive value denotes failure
@@ -637,6 +642,7 @@ errorMessage | string | Detailed error message if exists
 confirmationNumber |integer | numeric identifier for the reservation
 
 ###Response Status Codes
+
 Status Code | Description
 ----------- | -----------
 201 | Created, Successful
@@ -671,6 +677,7 @@ Status Code | Description
  ```
 
 ###Request URL Parameters
+
 **rid**: The unique ID of the restaurant
 **confirmation_number**: Numeric reservation identifier
 
@@ -680,6 +687,7 @@ Member | Type | Description | Usage
 ReservationState | string | The string "Canceled". | Required 
 
 ###Response Entity
+
 Member | Type | Description
 ------- | ---- |---------
 statusCode | integer | 0 denotes success, positive value denotes failure
@@ -689,6 +697,7 @@ confirmationNumber |integer | numeric identifier for the reservation
 errorMessage | string | Detailed error message if exists
 
 ###Response Status Codes
+
 Status Code | Description
 ----------- | -----------
 200 | Successful
@@ -747,6 +756,7 @@ Status Code | Description
 **confirmation_number**: Numeric reservation identifier
 
 ###Request Entity
+
 Member | Type | Description | Usage
 ------- | ---- |---------
 ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm" | Required
@@ -760,6 +770,7 @@ PointsType | string | Either "POP", "Standard", or "None" (one of the PointsType
 DinerReservationNotes | string | Notes from the diner to the restaurant. | Required
 
 ###Response Entity
+
 Member | Type | Description
 ------- | ---- |---------
 statusCode | integer | 0 denotes success, positive value denotes failure
