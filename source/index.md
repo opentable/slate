@@ -529,14 +529,14 @@ These API's act as the entry point from the consumer's side when making a reserv
 
 ```
 {
-  statusCode: 0
-  statusMessage: "Success"
-  restaurantId: 117784
-  reservationDateTime: "2015-04-18T19:30"
-  partySize: 10
-  slotLockId: 667520417
-  offerSlotLockId: 0
-  errorMessage: null
+  "statusCode": 0
+  "statusMessage": "Success"
+  "restaurantId": 117784
+  "reservationDateTime": "2015-04-18T19:30"
+  "partySize": 10
+  "slotLockId": 667520417
+  "offerSlotLockId": 0
+  "errorMessage": null
 }
 ```
 ###Request URL Parameters
@@ -587,7 +587,7 @@ Status Code | Description
     "CountryId" : "BR",
     "PhoneType" : "Mobile"
   },
-  "PointsType" : "POP",
+  "PointsType" : "POP"
 }
 ```
 
@@ -595,21 +595,21 @@ Status Code | Description
 
 ```
 {
-  statusCode: 0,
-  statusMessage: "Success",
-  restaurantId: 95152,
-  reservationDateTime: "2014-03-02T19:00",
-  partySize: 2,
-  confirmationNumber: 2252511,
-  offerConfirmationNumber: 0,
-  points: 1000,
-  pointsRule: "DIPAwardedPoints",
-  violations: [],
-  sameDayCutoff: null,
-  earlyCutoff: null,
-  overlappingReservations: [],
-  errorMessage: null,
-  securityToken: "01h-RR0vBzpeI8jkYhsNNPOnrNF9Q1"
+  "statusCode": 0,
+  "statusMessage": "Success",
+  "restaurantId": 95152,
+  "reservationDateTime": "2014-03-02T19:00",
+  "partySize": 2,
+  "confirmationNumber": 2252511,
+  "offerConfirmationNumber": 0,
+  "points": 1000,
+  "pointsRule": "DIPAwardedPoints",
+  "violations": [],
+  "sameDayCutoff": null,
+  "earlyCutoff": null,
+  "overlappingReservations": [],
+  "errorMessage": null,
+  "securityToken": "01h-RR0vBzpeI8jkYhsNNPOnrNF9Q1"
 }
 ```
 
@@ -664,15 +664,15 @@ Status Code | Description
 ```
 
 {
-  statusCode: 0,
-  statusMessage: "Success",
-  restaurantId: 95152,
-  confirmationNumber: 2252511,
-  offerConfirmationNumber: 0,
-  violations: [],
-  sameDayCutoff: null,
-  earlyCutoff: null,
-  errorMessage: null
+  "statusCode": 0,
+  "statusMessage": "Success",
+  "restaurantId": 95152,
+  "confirmationNumber": 2252511,
+  "offerConfirmationNumber": 0,
+  "violations": [],
+  "sameDayCutoff": null,
+  "earlyCutoff": null,
+  "errorMessage": null
  }
  ```
 
@@ -733,21 +733,21 @@ Status Code | Description
 ```
 
 {
-  statusCode: 0,
-  statusMessage: "Success",
-  restaurantId: 95152,
-  reservationDateTime: "2014-03-02T19:00",
-  partySize: 2,
-  confirmationNumber: 2252511,
-  offerConfirmationNumber: 0,
-  points: 1000,
-  pointsRule: "DIPAwardedPoints",
-  violations: [],
-  sameDayCutoff: null,
-  earlyCutoff: null,
-  overlappingReservations: [],
-  errorMessage: null,
-  securityToken: "01h-RR0vBzpeI8jkYhsNNPOnrNF9Q1"
+  "statusCode": 0,
+  "statusMessage": "Success",
+  "restaurantId": 95152,
+  "reservationDateTime": "2014-03-02T19:00",
+  "partySize": 2,
+  "confirmationNumber": 2252511,
+  "offerConfirmationNumber": 0,
+  "points": 1000,
+  "pointsRule": "DIPAwardedPoints",
+  "violations": [],
+  "sameDayCutoff": null,
+  "earlyCutoff": null,
+  "overlappingReservations": [],
+  "errorMessage": null,
+  "securityToken": "01h-RR0vBzpeI8jkYhsNNPOnrNF9Q1"
 }
 ```
 
