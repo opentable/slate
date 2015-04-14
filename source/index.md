@@ -628,7 +628,7 @@ DinerGpid | long | Global Person Id of the diner.  *Either DinerGpid or DinerCal
 DinerCallerCustomerId | integer | If this is a caller-created reservation, this is the cust id of the diner. | Required
 DinerPhone | struct | Contact phone for the diner.  Contains the string-valued fields PhoneNumber, CountryId, and PhoneType. CountryId is a standard 2 letter country abbreviation – e.g., "BR" for Brazil. PhoneType is either "Home", "Work", or "Mobile". | Required
 PointsType | string | Either "POP", "Standard", or "None" (one of the PointsType values returned by the availability service.) This is used to specify the maximum allowed points for the reservation. Note that it may not be possible for the service to award the maximum points; For example, if PointsType = "POP" but the reservation time is not POP, standard points are awarded. | Required
-DinerReservationNotes | string | Notes from the diner to the restaurant. | Required
+DinerReservationNotes | string | Notes from the diner to the restaurant. | Optional
 
 ###Response Entity
 
@@ -767,7 +767,7 @@ DinerGpid | long | Global Person Id of the diner.  *Either DinerGpid or DinerCal
 DinerCallerCustomerId | integer | If this is a caller-created reservation, this is the cust id of the diner. | Required
 DinerPhone | struct | Contact phone for the diner.  Contains the string-valued fields PhoneNumber, CountryId, and PhoneType. CountryId is a standard 2 letter country abbreviation – e.g., "BR" for Brazil. PhoneType is either "Home", "Work", or "Mobile". | Required
 PointsType | string | Either "POP", "Standard", or "None" (one of the PointsType values returned by the availability service.) This is used to specify the maximum allowed points for the reservation. Note that it may not be possible for the service to award the maximum points; For example, if PointsType = "POP" but the reservation time is not POP, standard points are awarded. | Required
-DinerReservationNotes | string | Notes from the diner to the restaurant. | Required
+DinerReservationNotes | string | Notes from the diner to the restaurant. | Optional
 
 ###Response Entity
 
