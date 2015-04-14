@@ -517,6 +517,7 @@ These API's act as the entry point from the consumer's side when making a reserv
 ##Lock a Reservation
 
 > POST :: `/reservation/v1/restaurants/<rid>/slotlocks`
+
 ```
 {
   "ReservationDateTime"  : "2015-04-18T19:30",
@@ -525,6 +526,7 @@ These API's act as the entry point from the consumer's side when making a reserv
 ```
 
 > Response
+
 ```
 {
   statusCode: 0
@@ -587,6 +589,7 @@ Status Code | Description
 ```
 
 > Response
+
 ```
 {
   statusCode: 0,
@@ -643,6 +646,7 @@ Status Code | Description
 ##Cancel a Reservation
 
 > PUT `/reservation/v1/restaurants/<rid>/confirmations/<confirmation_number>`
+
 ```
 {
   "ReservationState" : "Canceled"
@@ -650,6 +654,7 @@ Status Code | Description
 ```
 
 > Response
+
 ```
 
 {
@@ -695,6 +700,7 @@ Status Code | Description
 ##Change a Reservation
 
 > PUT `/reservation/v1/restaurants/<rid>/confirmations/<confirmation_number>`
+
 ```
 {
   "ReservationDateTime" : "2014-03-01T19:00",
@@ -714,6 +720,7 @@ Status Code | Description
 ```
 
 > Response
+
 ```
 
 {
