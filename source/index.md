@@ -379,7 +379,7 @@ OpenTable will call the partner API whenever a diner is attempting to book a res
 }
 ```
 
-> Partner Response :: HTTP 409 Conflict
+> Partner Response :: HTTP 200 OK
 
 ```
 {
