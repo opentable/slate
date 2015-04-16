@@ -316,7 +316,7 @@ The partner data store is considered the source of truth for reservation informa
   }
 ```
 
-> Partner response
+> Partner response :: HTTP 200 OK
 
 ```json
   {
@@ -326,6 +326,15 @@ The partner data store is considered the source of truth for reservation informa
     "party_size": 2,
     "expiration_seconds": 180,
     "turn_time_minutes": 90
+  }
+```
+
+> Partner response :: HTTP 409 Conflict
+
+```json
+  {
+    "error": "TBD",
+    "error_description": "TBD"
   }
 ```
 
@@ -370,7 +379,7 @@ OpenTable will call the partner API whenever a diner is attempting to book a res
 }
 ```
 
-> Partner Response
+> Partner Response :: HTTP 409 Conflict
 
 ```
 {
@@ -379,6 +388,15 @@ OpenTable will call the partner API whenever a diner is attempting to book a res
   "date_time": "2013-05-09T18:00",
   "party_size": 4
 }
+```
+
+> Partner response :: HTTP 409 Conflict
+
+```json
+  {
+    "error": "TBD",
+    "error_description": "TBD"
+  }
 ```
 
 Other points of note:
