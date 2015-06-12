@@ -310,8 +310,7 @@ The partner data store is considered the source of truth for reservation informa
   {
     "rid": 1,
     "date": "2015-02-18T18:15",
-    "party_size": 2,
-    "expiration_seconds": 180
+    "party_size": 2
   }
 ```
 
