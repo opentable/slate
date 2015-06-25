@@ -310,9 +310,7 @@ The partner data store is considered the source of truth for reservation informa
   {
     "rid": 1,
     "date": "2015-02-18T18:15",
-    "party_size": 2,
-    "expiration_seconds": 180,
-    "turn_time_minutes": 90
+    "party_size": 2
   }
 ```
 
@@ -324,8 +322,7 @@ The partner data store is considered the source of truth for reservation informa
     "rid": 1,
     "date": "2015-02-18T18:15",
     "party_size": 2,
-    "expiration_seconds": 180,
-    "turn_time_minutes": 90
+    "expiration_seconds": 180
   }
 ```
 
@@ -349,7 +346,6 @@ lock_id | Yes | The id of the lock. Must be a number. This is assigned by the pa
 date | Yes | The local start date and time of the reservation
 party_size | Yes | The size of the party the booking is for
 expiration_seconds | No | Number of seconds until the lock expires
-turn_time_minutes | No | The length of time the reservation will be made for. This value is given in minutes.
 
 ## Making a reservation
 
