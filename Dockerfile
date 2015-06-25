@@ -11,7 +11,7 @@ ADD Gemfile.lock /app/Gemfile.lock
 RUN cd /app; bundle install
 ADD . /app
 
-ADD http://artifactory.otenv.com:8081/artifactory/snapshots/com/opentable/discovery-announcer-standalone/1.0.0-SNAPSHOT/discovery-announcer-standalone-1.0.0-SNAPSHOT.jar /var/lib/discovery/discovery-announcer-standalone-1.0.0-SNAPSHOT.jar
+ADD http://artifactory.otenv.com:8081/artifactory/internal/com/opentable/discovery-announcer-standalone/1.0.0/discovery-announcer-standalone-1.0.0.jar /var/lib/discovery/discovery-announcer-standalone-1.0.0.jar
 
 WORKDIR /app
 
