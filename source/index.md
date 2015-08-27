@@ -177,7 +177,7 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 
 # Registering a Restaurant
 
->Partner PUT :: https://np.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;
+>Partner PUT :: https://restaurant-api.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;
 
 ```json
   {
@@ -443,7 +443,7 @@ CANCELED | The reservation has been canceled.
 
 OpenTable will PUT a reservation update message should any of the following reservation fields change.
 
-> Opentable POST :: https://&ltpartner_api&gt
+> OpenTable POST :: https://&lt;partner_callback_url&gt;/reservations/<reservation_id>
 
 ```
 {
@@ -467,7 +467,7 @@ OpenTable will PUT a reservation update message should any of the following rese
 }
 ```
 
-> Partner Response
+> Partner Response :: HTTP 200 OK
 
 ```
 {
@@ -481,15 +481,13 @@ OpenTable will PUT a reservation update message should any of the following rese
 * Party Size
 * Reservation date and time
 
-Providers should acknowledge the PUT with a 200.
-
 ### URL Detail
 
 `https://<partner_callback_url>/reservations/<reservation_id>`
 
 ### Entity
 
-See [Reservations](#reservation)
+See [Reservation](#making-a-reservation)
 
 <aside class="warning">Reservations cannot be moved across restaurants or systems. In order to move a reservation it must first be cancelled and then a new one made in the target restaurant.</aside>
 
@@ -497,7 +495,7 @@ See [Reservations](#reservation)
 
 Opentable will POST a cancel  reservation message, containing the RID and confirmation_number of the reservation.
 
-> Opentable POST :: https://&ltpartner_api&gt
+> OpenTable POST :: https://&lt;partner_callback_url&gt;/reservations/<reservation_id>/cancel
 
 ```
 {
@@ -517,6 +515,16 @@ Opentable will POST a cancel  reservation message, containing the RID and confir
 
 ## Sending Updates to OpenTable
 
+> Partner PUT :: OpenTable URL for the reservation.
+
+```
+{
+  "party_size": 3
+}
+```
+
+> OpenTable Response :: HTTP 200 OK
+
 Partner systems should perform a PUT to the OpenTable reservation system should any of the following reservation fields change.
 
 * Party Size
@@ -524,10 +532,14 @@ Partner systems should perform a PUT to the OpenTable reservation system should 
 
 ### URL Detail
 
-`OpenTable href for the reservation. Please see reservation schema.`
+`OpenTable URL for the reservation that was provided when reservation was created.`
+
+### Entity
+
+See [Reservation](#making-a-reservation)
 
 #Integration Testing
-These API's act as the entry point from the consumer's side when making a reservation.
+These APIs act as the entry point from the consumer's side when making a reservation.
 
 ##Lock a Reservation
 
@@ -570,7 +582,7 @@ PartySize | integer | Size of dining party | Required
 Member | Type | Description
 ------- | ---- |---------
 restaurantId | integer | The unique ID of the restaurant (RID)
-statusCode | integer | 0 denotes success, positive value denotes failure
+statusCode | integer | 0 denotes success, any positive value denotes a failure
 statusMessage | integer | Either "Success" or "Error"
 slotLockId | integer | Numeric slot lock id which can be used to make a booking subsequently
 offerSlotLockId | integer | Defaults to 0, can be ignored
