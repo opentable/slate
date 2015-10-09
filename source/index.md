@@ -515,15 +515,43 @@ Opentable will POST a cancel  reservation message, containing the RID and confir
 
 ## Sending Updates to OpenTable
 
-> Partner PUT :: OpenTable URL for the reservation.
+> Partner POST :: /resoupdate/resoupdate
 
 ```
+content-type: application/json
 {
-  "party_size": 3
+  "ConfirmationNumber" : 123,
+  "DateTime" : "2015-07-03 19:00",
+  "PartySize" : 2,
+  "ReservationState" : "Cancelled",
+  "RID" : "1107",
+  "SequenceNumber" : 1,
+  "ServerName" : "Server1",
+  "UpdateDT_UTC" : "2015-06-17 20:35"
 }
 ```
 
-> OpenTable Response :: HTTP 200 OK
+> OpenTable Response ::
+> HTTP 200 OK
+> HTTP 400 Invalid Parameters (Bad Request)
+> HTTP 404 DB is unavailable, try again later.
+
+
+###Request Entity
+
+Member | Type | Description | Usage
+------- | ---- |------------ | -----
+ConfirmationNumber | Int32 | Reservation Confirmation Number | Required (>0)
+DateTime | String | Reservation Date and Time | Required
+PartySize | INT32 | Party Size | Required for Pending, Seated, AssumedSeated (>0)
+ReservationState | String | State of the Reservation | Required. Acceptable Values : Pending, Seated, AssumedSeated, Cancelled, NoShow
+RID | Int32 | Restaurant ID | Required
+SequenceNumber | Int32 | Increasing Sequence Number for the update | Required
+ServerName | String | Server Name | Optional
+UpdatedDT_UTC | String | Update Date in UTC | Required
+
+###Response Entity
+None.
 
 Partner systems should perform a PUT to the OpenTable reservation system should any of the following reservation fields change.
 
