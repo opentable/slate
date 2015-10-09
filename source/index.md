@@ -515,10 +515,14 @@ Opentable will POST a cancel  reservation message, containing the RID and confir
 
 ## Sending Updates to OpenTable
 
+Partner systems should perform a POST to the OpenTable reservation system should any of the following reservation fields change.
+
+* Party Size
+* Reservation date and time
+
 > Partner POST :: /resoupdate/resoupdate
 
 ```
-content-type: application/json
 {
   "ConfirmationNumber" : 123,
   "DateTime" : "2015-07-03 19:00",
@@ -530,12 +534,6 @@ content-type: application/json
   "UpdateDT_UTC" : "2015-06-17 20:35"
 }
 ```
-
-> OpenTable Response ::
-> HTTP 200 OK
-> HTTP 400 Invalid Parameters (Bad Request)
-> HTTP 404 DB is unavailable, try again later.
-
 
 ###Request Entity
 
@@ -553,18 +551,14 @@ UpdatedDT_UTC | String | Update Date in UTC | Required
 ###Response Entity
 None.
 
-Partner systems should perform a PUT to the OpenTable reservation system should any of the following reservation fields change.
 
-* Party Size
-* Reservation date and time
+###Response Status Codes
+Status Code | Description
+------------ | ----------
+200 | OK
+400 | Invalid Parameters (Bad Request)
+404 | DB is unavailable, try again later. 
 
-### URL Detail
-
-`OpenTable URL for the reservation that was provided when reservation was created.`
-
-### Entity
-
-See [Reservation](#making-a-reservation)
 
 #Integration Testing
 These APIs act as the entry point from the consumer's side when making a reservation.
