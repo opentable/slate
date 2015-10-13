@@ -541,7 +541,7 @@ See [Reservation](#making-a-reservation)
 #Integration Testing
 These APIs act as the entry point from the consumer's side when making a reservation.
 
-##Lock a Reservation
+##Test Locking a Reservation
 
 > POST :: `/reservation/v1/restaurants/<rid>/slotlocks`
 
@@ -596,7 +596,7 @@ Status Code | Description
 404 | Not found
 409 | Conflict
 
-##Making a Reservation
+##Test Making a Reservation
 
 > POST  :: `/reservation/v1/restaurants/<rid>/reservations`
 
@@ -676,7 +676,7 @@ Status Code | Description
 404 | Not found
 409 | Conflict
 
-##Cancel a Reservation
+##Test Canceling a Reservation
 
 > PUT `/reservation/v1/restaurants/<rid>/confirmations/<confirmation_number>`
 
@@ -733,7 +733,7 @@ Status Code | Description
 409 | Conflict
 
 
-##Change a Reservation
+##Test Changing a Reservation
 
 > PUT `/reservation/v1/restaurants/<rid>/confirmations/<confirmation_number>`
 
