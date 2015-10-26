@@ -336,7 +336,7 @@ The partner data store is considered the source of truth for reservation informa
 
 ## Locking a Reservation
 
-> OpenTable POST :: https://&lt;partner_callback_url&gt;/locks
+> OpenTable POST :: https://&lt;partner_lock_url&gt;
 
 ```json
   {
@@ -383,7 +383,7 @@ expiration_seconds | No | Number of seconds until the lock expires
 
 OpenTable will call the partner API whenever a diner is attempting to book a reservation. OpenTable will call the **lock** API prior to booking a reservation via a POST to the reservation entity. 
 
-> Opentable POST :: https://&ltpartner_api&gt
+> Opentable POST :: https://&lt;partner_make_reservation_url&gt;
 
 ```
 {
@@ -437,7 +437,6 @@ Other points of note:
 Member | Description
 --------- | -----------
 rid | The rid that this reservation is assigned to
-?href | The href that can be used to retrieve the reservation details from OpenTable
 lock_id | **Optional.** The id of the inventory lock acquired for this reservation.
 confirmation_number | Confirmation number for the reservation.
 lock_id | lock id for the reservation
@@ -467,7 +466,7 @@ CANCELED | The reservation has been canceled.
 
 ### URL Detail
 
-`https://<partner_callback_url>/reservations/<reservation_id>`
+`https://<partner_make_reservation_url>`
 
 # Exchanging Reservation Updates
 
@@ -475,7 +474,7 @@ CANCELED | The reservation has been canceled.
 
 OpenTable will PUT a reservation update message should any of the following reservation fields change.
 
-> OpenTable POST :: https://&lt;partner_callback_url&gt;/reservations/<reservation_id>
+> OpenTable POST :: https://&lt;partner_update_reservation_url&gt;
 
 ```
 {
@@ -515,7 +514,7 @@ OpenTable will PUT a reservation update message should any of the following rese
 
 ### URL Detail
 
-`https://<partner_callback_url>/reservations/<reservation_id>`
+`https://<partner_update_reservation_url>`
 
 ### Entity
 
@@ -527,7 +526,7 @@ See [Reservation](#making-a-reservation)
 
 Opentable will POST a cancel  reservation message, containing the RID and confirmation_number of the reservation.
 
-> OpenTable POST :: https://&lt;partner_callback_url&gt;/reservations/<reservation_id>/cancel
+> OpenTable POST :: https://&lt;partner_cancel_reservation_url&gt;
 
 ```
 {
@@ -553,7 +552,7 @@ Partner systems should perform a POST to the OpenTable reservation system should
 * Reservation date and time
 * Reservation Status
 
-> Partner POST :: /resoupdate/resoupdate
+> Partner POST :: https://restaurant-api.opentable.com/resoupdate/resoupdate
 
 ```
 {
