@@ -595,6 +595,14 @@ Status Code | Description
 #Integration Testing
 These APIs act as the entry point from the consumer's side when making a reservation.
 
+Hosts:
+
+CI: `reservation-na-ci.otenv.com`
+
+PP: `reservation-na-pp.otenv.com`
+
+Prod: `reservation-na-sc.otenv.com`
+
 ##Test Locking a Reservation
 
 > POST :: `/reservation/v1/restaurants/<rid>/slotlocks`
