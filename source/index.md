@@ -202,6 +202,48 @@ partner_restaurant_id | Restaurant id as defined by the partner system
 # Availability
 
 ## Publishing Availability
+Partners can inform OpenTable of availability by pushing the available inventory as a list of availability items; where an item is specified by a date, time, and party size that can be booked at the restaurant.
+
+Partners specify multiple values for the time field in order to efficiently represent many items that apply to the same party size. Every time slot that is listed will have availability set to true. All omitted times will have availability set to false implicitly.
+
+Once availability for a day and party size is posted, it can be updated by posting another availability for the same date and party size, but with different times. To remove all availability for a day, send an empty array of time.
+
+<aside class="notice">
+For the availability endpoint all dates and times should be sent in restaurant local time.
+</aside>
+
+### V2 Publishing Availability
+
+> Partner POST :: https://restaurant-api.opentable.opentable.com/api/v2/&lt;partner_id&gt;/availability
+
+```json
+{
+  "rid" : 8675309,
+  "date" : "2015-11-02",
+  "sequence_id" : 1,
+  "party_sizes" : {
+    "2": ["18:45", "19:00"],
+    "4": ["19:00", "19:15"]
+  }
+}
+```
+> OpenTable response :: HTTP 1.1 200 OK
+
+### HTTP Request
+
+`POST https://restaurant-api.opentable.com/api/v2/<partner_id>/availability`
+
+### Entity
+
+Member | Description
+--------- | -----------
+rid | The restaurant id.
+date | The local date in ISO 8601
+sequence_id | Sequence id is like a version number and is used to decide whether to overwrite previously received availability. When an availability update is received, the provided sequence id is compared with the highest sequence id for the combination of (rid, date, party size) that was received so far. If the new sequence id is higher, availability is updated; otherwise the update is ignored.
+party_sizes | Object of party sizes and their corresponding availability times in HH:mm 24-hour format. Only availabilities specified here will be updated.
+
+
+### V1 Publishing Availability
 
 > Partner POST :: https://restaurant-api.opentable.opentable.com/api/v1/&lt;partner_id&gt;/availability
 
@@ -226,19 +268,9 @@ partner_restaurant_id | Restaurant id as defined by the partner system
 > OpenTable response :: HTTP 1.1 200 OK
 ```
 
-Partners can inform OpenTable of availability by pushing the available inventory as a list of availability items; where an item is specified by a date, time, and party size that can be booked at the restaurant.
-
-Partners specify multiple values for the time field in order to efficiently represent many items that apply to the same party size. Every time slot that is listed will have availability set to true. All omitted times will have availability set to false implicitly.
-
-Once availability for a day and party size is posted, it can be updated by posting another availability for the same date and party size, but with different times. To remove all availability for a day, send an empty array of time.
-
-<aside class="notice">
-For the availability endpoint all dates and times should be sent in restaurant local time.
-</aside>
-
 ### HTTP Request
 
-`POST https://restaurant-api.opentable.com/<partner_id>/availability`
+`POST https://restaurant-api.opentable.com/api/v1/<partner_id>/availability`
 
 ### Entity
 
