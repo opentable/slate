@@ -177,7 +177,7 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
 
 # Registering a Restaurant
 
->Partner PUT :: https://restaurant-api.opentable.com/&lt;partner_id&gt;/restaurants/&lt;rid&gt;
+>Partner PUT :: https://restaurant-api.opentable.com/api/v1/&lt;partner_id&gt;/restaurants/&lt;rid&gt;
 
 ```json
   {
