@@ -61,19 +61,11 @@ All POST, PUT, and PATCH HTTP requests should contain a unique X-Request-Id head
 
 # Environments
 
-OpenTable has three separate environments. Each environment:
+OpenTable has two separate environments. Each environment:
 
 * corresponds to a different stage of the development process
 * has different DNS names for the core services
 * has it's own copy of the data. State is not shared across environments.
-
-## Continuous Integration
-The Continuous Integration **(CI)** environment is used for daily automated builds and tests. Run your builds and tests against CI as frequently as needed to validate new functionality. Beta builds should always pass through the CI environment.
-
-Service Name | Service URL
---------- | -----------
-Authentication | https://oauth-ci.opentable.com
-Network Partner | https://restaurant-api-ci.opentable.com
 
 ## Pre-Production
 The Pre-Production **(PP)** environment is available once you are ready for final acceptance testing of your OpenTable integrations. Load testing can also be scheduled and performed in this environment.
