@@ -214,7 +214,7 @@ For the availability endpoint all dates and times should be sent in restaurant l
 
 ### V2 Publishing Availability
 
-> Partner POST :: https://restaurant-api.opentable.opentable.com/api/v2/&lt;partner_id&gt;/availability
+> Partner POST :: https://restaurant-api.opentable.com/api/v2/&lt;partner_id&gt;/availability
 
 ```json
 {
@@ -245,7 +245,7 @@ party_sizes | Object of party sizes and their corresponding availability times i
 
 ### V1 Publishing Availability
 
-> Partner POST :: https://restaurant-api.opentable.opentable.com/api/v1/&lt;partner_id&gt;/availability
+> Partner POST :: https://restaurant-api.opentable.com/api/v1/&lt;partner_id&gt;/availability
 
 ```json
   [
@@ -284,7 +284,7 @@ sequence_id | Sequence id is like a version number and is used to decide whether
 
 ## Checking Availability
 
-> Partner GET :: https://restaurant-api.opentable.opentable.com/api/v1/&lt;partner_id&gt;/restaurants/&lt;rid&gt;/checkAvailability?partySize=&lt;party size&gt;&fromDatetime=&lt;from&gt;&toDatetime=&lt;to&gt;
+> Partner GET :: https://restaurant-api.opentable.com/api/v1/&lt;partner_id&gt;/restaurants/&lt;rid&gt;/checkAvailability?partySize=&lt;party size&gt;&fromDatetime=&lt;from&gt;&toDatetime=&lt;to&gt;
 
 > OpenTable response :: HTTP 1.1 200 OK
 
