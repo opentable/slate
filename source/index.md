@@ -227,12 +227,12 @@ For the availability endpoint all dates and times should be sent in restaurant l
 
 ### Entity
 
-Member | Description
---------- | -----------
-rid | The restaurant id.
-date | The local date in ISO 8601
-sequence_id | Sequence id is like a version number and is used to decide whether to overwrite previously received availability. When an availability update is received, the provided sequence id is compared with the highest sequence id for the combination of (rid, date, party size) that was received so far. If the new sequence id is higher, availability is updated; otherwise the update is ignored.
-party_sizes | Object of party sizes and their corresponding availability times in HH:mm 24-hour format. Only availabilities specified here will be updated.
+Member | Type | Description
+--------- | ----------- | -----------
+rid | Integer | OpenTable RID.
+date | Date | The local date in ISO 8601
+sequence_id | Integer | Sequence id is like a version number and is used to decide whether to overwrite previously received availability. When an availability update is received, the provided sequence id is compared with the highest sequence id for the combination of (rid, date, party size) that was received so far. If the new sequence id is higher, availability is updated; otherwise the update is ignored.
+party_sizes | Map | Map of party sizes and their corresponding availability times in HH:mm 24-hour format. Only availabilities specified here will be updated.
 
 
 ### V1 Publishing Availability
@@ -266,13 +266,13 @@ party_sizes | Object of party sizes and their corresponding availability times i
 
 ### Entity
 
-Member | Description
---------- | -----------
-rid | The restaurant id.
-date | The local
-party_size | The size of the party that may be booked at the time(s) specified
-time | An arry of times that have availability for the provided party size. All other times are set to false implicitly. Given as offsets in minutes from midnight.
-sequence_id | Sequence id is like a version number and is used to decide whether to overwrite previously received availability. When an availability update is received, the provided sequence id is compared with the highest sequence id for the combination of (rid, date, party size) that was received so far. If the new sequence id is higher, availability is updated; otherwise the update is ignored.
+Member | Type | Description
+--------- | ----------- | -----------
+rid | Integer | OpenTable RID.
+date | Date | The local date in ISO 8601
+party_size | Integer | The size of the party that may be booked at the time(s) specified
+time | Array | An arry of times that have availability for the provided party size. All other times are set to false implicitly. Given as offsets in minutes from midnight.
+sequence_id | Integer | Sequence id is like a version number and is used to decide whether to overwrite previously received availability. When an availability update is received, the provided sequence id is compared with the highest sequence id for the combination of (rid, date, party size) that was received so far. If the new sequence id is higher, availability is updated; otherwise the update is ignored.
 
 ## Checking Availability
 
