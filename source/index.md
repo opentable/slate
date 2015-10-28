@@ -363,13 +363,13 @@ This endpoint is called to reserve inventory while the diner completes the reser
 
 ### Entity
 
-Parameter | Required | Description
---------- | ------- | -----------
-rid | Yes | The restaurant id
-lock_id | Yes | The id of the lock. Must be a number. This is assigned by the partner system and **must be globally unique**.
-date | Yes | The local start date and time of the reservation
-party_size | Yes | The size of the party the booking is for
-expiration_seconds | No | Number of seconds until the lock expires
+Parameter | Type | Required | Description
+--------- | ------- | ------- | -----------
+rid | Integer | Yes | The restaurant id
+lock_id | Long | Yes | The id of the lock. This is assigned by the partner system and will be used to make a reservation in a subsequent call. (See [Reservation Pattern](http://arnon.me/soa-patterns/reservation/))
+date | Date|  Yes | The local start date and time of the reservation
+party_size | Integer | Yes | The size of the party the booking is for
+expiration_seconds | Long | No | Number of seconds until the lock expires
 
 ## Making a reservation
 
@@ -421,9 +421,7 @@ OpenTable will call the partner API whenever a diner is attempting to book a res
 
 Other points of note:
 
-* The href field in the reservation supplied by OpenTable when booking the reservation will remain valid only if OpenTable receives a valid response to its POST call to the reservation endpoint.
-* The res_id field MUST be populated and returned by the partner API if the reservation is created in the partner's reservation system.
-* Should there be a communication break prior ro OpenTable receiving a 201 (or other) response then OpenTable will attempt at least one retry to create the reservation. The retry attempt will have the same unique href as was specified in the first attempt at reservation creation.
+* OpenTable do up to 3 total retries to lock, make, change, or cancel a reservation if it receives and HTTP 5xx response or a timeout. Retries are done with the same request parameters and body. 
 
 ### Entity (yet to determine which are optional)
 Member | Description
