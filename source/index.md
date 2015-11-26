@@ -437,7 +437,8 @@ last_name | The last name of the diner
 number | **Optional.** The phone number for the diner for this reservation
 type | **Optional.** The phone type for the diner for this reservation
 country_code | **Optional.** The phone type for the diner for this reservation
-email | **Optional.** The email address of the diner. This field will only be present if the diner has opted into email marketing for OpenTable.
+transactional_email | The email address of the diner for sending transactional email. This field can only be used for email marketing if opt_in_for_restaurant_marketing is set to **true**
+opt_in_for_restaurant_marketing | Whether transactional_email can also be used for marketing
 web_reso_notes | **Optional.**  Notes submitted by the diner along with this reservation
 guest_reso_notes | **Optional.**
 
