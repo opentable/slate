@@ -476,7 +476,8 @@ OpenTable will PUT a reservation update message should any of the following rese
     "gpid": 987,
     "first_name": "Ernest",
     "last_name": "Rivas",
-    "email": "erivas@abc.com",
+    "transactional_email": "erivas@abc.com",
+    "opt_in_for_restaurant_marketing": true
     "phone": {
       "number": "555.666.7777",
       "type": "Mobile",
