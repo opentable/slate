@@ -17,15 +17,14 @@ search: true
 
 # Welcome
 
-Welcome to the OpenTable Developer Guide for using the Inventory and Guest Center Sync API. The following information will show you how to integrate with OpenTable's APIs for retrieving and managing reservations, guest details and inventory.
+Welcome to the OpenTable Developer's Guide for using the Network Inventory and Guest Center Sync API. The following information will show you how to integrate with OpenTable's APIs for retrieving and managing reservations, guest details and inventory.
 
 # Getting Started
 
 Please begin by selecting the service of interest: 
 
-(1) Inventory API - available to groups for sharing available restaurant availability with OpenTable 
-(2) Guest Center Sync API - utilized by restaurants and third parties for read-only access to reservations and a restaurant guestlist 
-
+1. Inventory API - available to groups for sharing available restaurant availability with OpenTable 
+2. Guest Center Sync API - utilized by third party providers for read-only access to reservations and a restaurant guestlist.
 
 ## Guest Center API Overview
 
