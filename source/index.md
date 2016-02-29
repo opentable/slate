@@ -1,5 +1,5 @@
 ---
-title: OpenTable Developer's Guide
+title: OpenTable Developer Guide - Restaurant API's
 
 language_tabs:
   - ruby
@@ -17,13 +17,31 @@ search: true
 
 # Welcome
 
-Welcome to the [OpenTable](https://www.opentable.com) Developer's Guide. This guide is will show you how to integrate with OpenTable's APIs to manage your restaurants, reservations, and inventory.
+Welcome to the OpenTable Developer Guide for using the Inventory and Guest Center Sync API. The following information will show you how to integrate with OpenTable's APIs for retrieving and managing reservations, guest details and inventory.
 
 # Getting Started
 
-## Overview
+Please begin by selecting the service of interest: 
 
-Integration with the OpenTable Partner API involves following steps:
+(1) Inventory API - available to groups for sharing available restaurant availability with OpenTable 
+(2) Guest Center Sync API - utilized by restaurants and third parties for read-only access to reservations and a restaurant guestlist 
+
+
+## Guest Center API Overview
+
+Integration with the Guest Center Sync API involves following steps:
+
+1. Complete the SOC-2 security questionnaire 
+2. Sign and consent to the OpenTable Developer Terms of Service (TOS) 
+3. Confirm which restaurant(s) you wish to work with and have them sign applicable data sharing agreement 
+4. Request a client id and client secret that are used for authorization
+5. Make a sample 'guest' and 'reservation' pull request in the Pre-Production environment
+6. Send and receive ongoing guest and reservation details by restaurant 
+
+
+## Inventory Overview
+
+Integration with the Inventory API involves following steps:
 
 1. Obtain a client id and client secret that are used for authorization.
 2. Register a restaurant to provide required metadata and a callback. This will create a restaurant profile in [www.opentable.com] (www.opentable.com) search results.
@@ -35,9 +53,9 @@ Integration with the OpenTable Partner API involves following steps:
 
 ### Security
 
-OpenTable uses OAuth 2.0 as the primary authorization mechanism. This means that an access token must be obtained and submitted with all requests. See [Authorization](#authorization) section for more details.
+OpenTable uses OAuth 2.0 as the primary authorization mechanism. This means that an access token must be obtained and submitted with all requests. See [Authorization](#authorization) section for more details.OpenTable's Network Partner APIs can only be accessed via **HTTPS**. This applies to all environments. 
 
-OpenTable's Network Partner APIs can only be accessed via **HTTPS**. This applies to all environments.
+For developers wishing to use the Guest Center Sync API, prior access must be granted via the SOC-2 approval process. Click here to learn more. 
 
 ### Content Negotiation
 
@@ -73,7 +91,9 @@ The Pre-Production **(PP)** environment is available once you are ready for fina
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth-pp.opentable.com
-Network Partner | https://restaurant-api-pp.opentable.com
+Inventory Partner | https://restaurant-api-pp.opentable.com
+Guest Center Developer | https://gc-sync-api-pp.opentable.com
+
 
 ## Production
 The production services are the same ones accessed by the OpenTable.com web site. Your integration is live once it is communicating with the OpenTable production web services.
@@ -81,7 +101,9 @@ The production services are the same ones accessed by the OpenTable.com web site
 Service Name | Service URL
 --------- | -----------
 Authentication | https://oauth.opentable.com
-Network Partner | https://restaurant-api.opentable.com
+Inventory Partner | https://restaurant-api.opentable.com
+Guest Center Developer | https://gc-sync-api.opentable.com
+
 
 <aside class="warning">Client ids need be specifically granted production access. Please contact us to request production privileges for your client id.</aside>
 
@@ -95,7 +117,7 @@ OpenTable uses [OAuth 2.0](https://tools.ietf.org/html/rfc6749) to authorize acc
 
 ## Requesting a Client Id
 
-To request developer access, [send us an email](mailto:dchornyi@opentable.com). Self-registration will be available soon.
+To request developer access, [send us an email](mailto:dchornyi@opentable.com; njoshi@opentable.com). Self-registration will be available soon.
 
 ## Obtaining an Access Token
 
@@ -176,7 +198,7 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
     "partner_restaurant_id": 12345
   }
 ```
-> OpenTable resopnse :: HTTP 1.1 200 OK
+> OpenTable response :: HTTP 1.1 200 OK
 
 
 The setup entity is used to specify how the restaurant will integrate with OpenTable. This entry must be PUT to the server prior to the partner sending any availability updates. Availability updates sent prior to the setup being PUT will fail with an error code of 407 (unexpected).
