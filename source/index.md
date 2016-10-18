@@ -460,8 +460,8 @@ type | **Optional.** The phone type for the diner for this reservation
 country_code | **Optional.** The phone type for the diner for this reservation
 transactional_email | The email address of the diner for sending transactional email. This field can only be used for email marketing if opt_in_for_restaurant_marketing is set to **true**
 opt_in_for_restaurant_marketing | Whether transactional_email can also be used for marketing
-web_reso_notes | **Optional.**  Notes submitted by the diner along with this reservation
-guest_reso_notes | **Optional.**
+web_reso_notes | **Optional.**  Notes from Consumer Web (currently Redemption or Offer information)
+guest_reso_notes | **Optional.** Notes submitted by the diner along with this reservation
 
 ### Reservation States
 
