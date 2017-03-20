@@ -221,6 +221,8 @@ Partners specify multiple values for the time field in order to efficiently repr
 
 Once availability for a day and party size is posted, it can be updated by posting another availability for the same date and party size, but with different times. To remove all availability for a day, send an empty array of time.
 
+OpenTable stores in 15 minutes intervals.
+
 <aside class="notice">
 For the availability endpoint all dates and times should be sent in restaurant local time.
 </aside>
@@ -235,8 +237,9 @@ For the availability endpoint all dates and times should be sent in restaurant l
   "date" : "2015-11-02",
   "sequence_id" : 1,
   "party_sizes" : {
-    "2": ["18:45", "19:00"],
-    "4": ["19:00", "19:15"]
+    "1": ["18:45", "19:00"],
+    "2": ["19:00", "19:15"],
+    "3": []
   }
 }
 ```
@@ -253,8 +256,11 @@ Member | Type | Description
 rid | Integer | OpenTable RID.
 date | Date | The local date in ISO 8601
 sequence_id | Integer | Sequence id is like a version number and is used to decide whether to overwrite previously received availability. When an availability update is received, the provided sequence id is compared with the highest sequence id for the combination of (rid, date, party size) that was received so far. If the new sequence id is higher, availability is updated; otherwise the update is ignored.
-party_sizes | Map | Map of party sizes and their corresponding availability times in HH:mm 24-hour format. Only availabilities specified here will be updated.
+party_sizes | Map | Map of party sizes and their corresponding availability times in HH:mm 24-hour format. The mm can have values: 00, 15, 30, 45. Only availabilities specified here will be updated.
 
+<aside class="notice">
+Only party sizes specified in the request are processed. To clear availability for specific party size, this party size should be included in request, with empty list of times. In the example, the party size "3" would be cleared and Availability for party sizes 4-20 would not be changed.
+</aside>
 
 ### V1 Publishing Availability
 
@@ -279,7 +285,6 @@ party_sizes | Map | Map of party sizes and their corresponding availability time
   ]
 ```
 > OpenTable response :: HTTP 1.1 200 OK
-```
 
 ### HTTP Request
 
@@ -398,7 +403,7 @@ OpenTable will call the partner API whenever a diner is attempting to book a res
 
 > Opentable POST :: https://&lt;partner_make_reservation_url&gt;
 
-```
+```json
 {
   "rid": 888,
   "date_time": "2013-05-09T18:00",
@@ -422,7 +427,7 @@ OpenTable will call the partner API whenever a diner is attempting to book a res
 
 > Partner Response :: HTTP 200 OK
 
-```
+```json
 {
   "confirmation_number": 1,
   "rid": 888,
@@ -484,11 +489,11 @@ CANCELED | The reservation has been canceled.
 
 ## Receiving Updates from OpenTable
 
-OpenTable will PUT a reservation update message should any of the following reservation fields change.
+OpenTable will POST a reservation update message should any of the following reservation fields change.
 
 > OpenTable POST :: https://&lt;partner_update_reservation_url&gt;
 
-```
+```json
 {
   "rid": 888,
   "date_time": "2013-05-09T18:00",
@@ -498,7 +503,7 @@ OpenTable will PUT a reservation update message should any of the following rese
     "first_name": "Ernest",
     "last_name": "Rivas",
     "transactional_email": "erivas@abc.com",
-    "opt_in_for_restaurant_marketing": true
+    "opt_in_for_restaurant_marketing": true,
     "phone": {
       "number": "555.666.7777",
       "type": "Mobile",
@@ -513,7 +518,7 @@ OpenTable will PUT a reservation update message should any of the following rese
 
 > Partner Response :: HTTP 200 OK
 
-```
+```json
 {
   "confirmation_number": 556,
   "rid": 888,
@@ -535,13 +540,13 @@ See [Reservation](#making-a-reservation)
 
 <aside class="warning">Reservations cannot be moved across restaurants or systems. In order to move a reservation it must first be cancelled and then a new one made in the target restaurant.</aside>
 
-##Receiving Cancels From Opentable
+## Receiving Cancels From Opentable
 
 Opentable will POST a cancel  reservation message, containing the RID and confirmation_number of the reservation.
 
 > OpenTable POST :: https://&lt;partner_cancel_reservation_url&gt;
 
-```
+```json
 {
   "rid": 888,
   "confirmation_number": 1
@@ -550,7 +555,7 @@ Opentable will POST a cancel  reservation message, containing the RID and confir
 
 > Partner Response
 
-```
+```json
 {
   "rid": 888,
   "confirmation_number": 1
@@ -567,7 +572,7 @@ Partner systems should perform a POST to the OpenTable reservation system should
 
 > Partner POST :: https://restaurant-api.opentable.com/resoupdate/resoupdate
 
-```
+```json
 {
   "ConfirmationNumber" : 123,
   "DateTime" : "2015-07-03 19:00",
@@ -580,7 +585,7 @@ Partner systems should perform a POST to the OpenTable reservation system should
 }
 ```
 
-###Request Entity
+### Request Entity
 
 Member | Type | Description | Usage
 ------- | ---- |------------ | -----
@@ -593,11 +598,11 @@ SequenceNumber | Int32 | Increasing Sequence Number for the update | Required
 ServerName | String | Server Name | Optional
 UpdatedDT_UTC | String | Update Date in UTC | Required
 
-###Response Entity
+### Response Entity
 None.
 
 
-###Response Status Codes
+### Response Status Codes
 Status Code | Description
 ------------ | ----------
 200 | OK
@@ -605,7 +610,44 @@ Status Code | Description
 404 | DB is unavailable, try again later. 
 
 
-#Integration Testing
+
+## Echo backs
+
+Echo-backs are designed to prevent "ghost" bookings in a partner's reservation system if there is a failure in the OT booking process after the Make has been sent to a partner. The idea is to issue the [Reservation Update](#sending-updates-to-opentable) API call after a reservation is saved to the Partner's database and processing of the "Make" call is finished (response is sent to OpenTable). This will allow OpenTable to check the existence of the booking confirmation number against it's internal database and in the case where a booking does not exist, OpenTable will issue a cancel request.
+
+## FRN Recovery
+
+This API is designed to trigger direct restaurant communication to determine if the given restaurant is online and reachable. This is the workflow:
+* OpenTable tracks failures of the Lock/Make/Update/Cancel API calls per each RID
+* After 3 failures in 5 minutes, OpenTable marks this restaurant with an "FRN" (False Reserve Now) state. This removes the ability to book this restaurant from OpenTable website.
+* For FRN restaurants, OpenTable periodically calls the "FRN recovery" endpoint to check if the restaurant is back online.
+* In the case "FRN Recovery" returns success,  OpenTable removes the FRN status from this restaurant and the restaurant becomes bookable.
+
+### Receiving FRN Recovery Checks from OpenTable
+
+> OpenTable GET :: https://&lt;partner_frn_url&gt;?rid=<rid>
+
+> Partner Response :: HTTP 200 OK
+
+```json
+{
+    "rid": 1,
+    "online": true
+}
+
+```
+Any other response code would indicate check failure. There is special case when rid is incorrectly provisioned and it is not exists in the partner's database. To indicate such case, partner could implement the following response:
+
+> Partner Response :: HTTP 400 Bad request
+
+```json
+{
+    "error": "ECannotFindRestaurant"
+}
+
+```
+
+# Integration Testing
 These APIs act as the entry point from the consumer's side when making a reservation.
 
 Hosts:
@@ -616,7 +658,7 @@ PP: `reservation-na-pp.otenv.com`
 
 Prod: `reservation-na-sc.otenv.com`
 
-##Test Locking a Reservation
+## Test Locking a Reservation
 
 > POST :: `/reservation/v1/restaurants/<rid>/slotlocks`
 
@@ -641,18 +683,18 @@ Prod: `reservation-na-sc.otenv.com`
   "errorMessage": null
 }
 ```
-###Request URL Parameters
+### Request URL Parameters
 **rid**: The unique ID of the restaurant
 
 
-###Request Entity
+### Request Entity
 
 Member | Type | Description | Usage
 ------- | ---- |------------ | -----
 ReservationDateTime | string | ISO format Date and Time string in the form: "YYYY-MM-DDTHH:mm" | Required
 PartySize | integer | Size of dining party | Required
 
-###Response Entity
+### Response Entity
 
 Member | Type | Description
 ------- | ---- |---------
@@ -663,7 +705,7 @@ slotLockId | integer | Numeric slot lock id which can be used to make a booking 
 offerSlotLockId | integer | Defaults to 0, can be ignored
 errorMessage | string | Detailed error message if exists
 
-###Response Status Codes
+### Response Status Codes
 
 Status Code | Description
 ----------- | -----------
@@ -671,7 +713,7 @@ Status Code | Description
 404 | Not found
 409 | Conflict
 
-##Test Making a Reservation
+## Test Making a Reservation
 
 > POST  :: `/reservation/v1/restaurants/<rid>/reservations`
 
@@ -715,10 +757,10 @@ Status Code | Description
 }
 ```
 
-###Request URL Parameters
+### Request URL Parameters
 **rid**: The unique ID of the restaurant
 
-###Request Entity
+### Request Entity
 
 Member | Type | Description | Usage
 ------- | ---- |------------ | -----
@@ -732,7 +774,7 @@ DinerPhone | struct | Contact phone for the diner.  Contains the string-valued f
 PointsType | string | Either "POP", "Standard", or "None" (one of the PointsType values returned by the availability service.) This is used to specify the maximum allowed points for the reservation. Note that it may not be possible for the service to award the maximum points; For example, if PointsType = "POP" but the reservation time is not POP, standard points are awarded. | Required
 DinerReservationNotes | string | Notes from the diner to the restaurant. | Optional
 
-###Response Entity
+### Response Entity
 
 Member | Type | Description
 ------- | ---- |---------
@@ -743,7 +785,7 @@ offerSlotLockId | integer | Defaults to 0, can be ignored
 errorMessage | string | Detailed error message if exists
 confirmationNumber |integer | numeric identifier for the reservation
 
-###Response Status Codes
+### Response Status Codes
 
 Status Code | Description
 ----------- | -----------
@@ -751,7 +793,7 @@ Status Code | Description
 404 | Not found
 409 | Conflict
 
-##Test Canceling a Reservation
+## Test Canceling a Reservation
 
 > PUT `/reservation/v1/restaurants/<rid>/confirmations/<confirmation_number>`
 
@@ -778,17 +820,17 @@ Status Code | Description
  }
  ```
 
-###Request URL Parameters
+### Request URL Parameters
 
 **rid**: The unique ID of the restaurant
 **confirmation_number**: Numeric reservation identifier
 
-###Request Entity
+### Request Entity
 Member | Type | Description | Usage
 ------- | ---- |------------ | -----
 ReservationState | string | The string "Canceled". | Required 
 
-###Response Entity
+### Response Entity
 
 Member | Type | Description
 ------- | ---- |---------
@@ -798,7 +840,7 @@ restaurantId | integer | The unique ID of the restaurant (RID)
 confirmationNumber |integer | numeric identifier for the reservation
 errorMessage | string | Detailed error message if exists
 
-###Response Status Codes
+### Response Status Codes
 
 Status Code | Description
 ----------- | -----------
@@ -808,7 +850,7 @@ Status Code | Description
 409 | Conflict
 
 
-##Test Changing a Reservation
+## Test Changing a Reservation
 
 > PUT `/reservation/v1/restaurants/<rid>/confirmations/<confirmation_number>`
 
@@ -853,11 +895,11 @@ Status Code | Description
 }
 ```
 
-###Request URL Parameters
+### Request URL Parameters
 **rid**: The unique ID of the restaurant
 **confirmation_number**: Numeric reservation identifier
 
-###Request Entity
+### Request Entity
 
 Member | Type | Description | Usage
 ------- | ---- |------------ | -----
@@ -871,7 +913,7 @@ DinerPhone | struct | Contact phone for the diner.  Contains the string-valued f
 PointsType | string | Either "POP", "Standard", or "None" (one of the PointsType values returned by the availability service.) This is used to specify the maximum allowed points for the reservation. Note that it may not be possible for the service to award the maximum points; For example, if PointsType = "POP" but the reservation time is not POP, standard points are awarded. | Required
 DinerReservationNotes | string | Notes from the diner to the restaurant. | Optional
 
-###Response Entity
+### Response Entity
 
 Member | Type | Description
 ------- | ---- |---------
@@ -882,7 +924,7 @@ offerSlotLockId | integer | Defaults to 0, can be ignored
 errorMessage | string | Detailed error message if exists
 confirmationNumber |integer | numeric identifier for the reservation
 
-###Response Status Codes
+### Response Status Codes
 Status Code | Description
 ----------- | -----------
 200 | Created, Successful
