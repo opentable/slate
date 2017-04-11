@@ -579,7 +579,7 @@ Partner systems should perform a POST to the OpenTable reservation system should
   "PartySize" : 2,
   "ReservationState" : "Cancelled",
   "RID" : "1107",
-  "SequenceNumber" : 1,
+  "SequenceNumber" : 0,
   "ServerName" : "Server1",
   "UpdateDT_UTC" : "2015-06-17 20:35"
 }
@@ -594,7 +594,7 @@ DateTime | String | Reservation Date and Time | Required
 PartySize | INT32 | Party Size | Required for Pending, Seated, AssumedSeated (>0)
 ReservationState | String | State of the Reservation | Required. Acceptable Values : Pending, Seated, AssumedSeated, Cancelled, NoShow
 RID | Int32 | Restaurant ID | Required
-SequenceNumber | Int32 | Increasing Sequence Number for the update | Required
+SequenceNumber | Int32 | Must always be 0 | Required
 ServerName | String | Server Name | Optional
 UpdatedDT_UTC | String | Update Date in UTC | Required
 
