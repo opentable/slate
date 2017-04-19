@@ -184,9 +184,29 @@ Given a client id (e.g., "client_id") and a client secret (e.g., "client_secret"
     }
 ```
 
+> OpenTable Response :: HTTP 1.1 403 Forbidden
+
+```json
+    {
+        "error": "no_rid_routing",
+        "message": "No routing for RID:888"
+    }
+```
+
+> OpenTable Response :: HTTP 1.1 403 Forbidden
+
+```json
+    {
+        "error": "unknown_client_id",
+        "message": "OAuth ClientID:<client-id> is not provisioned for umami-partner-service"
+    }
+```
+
+
 * If the access token is present and valid, an appropriate response will be returned by the resource server.
 * If the access token is missing HTTP 400 Bad Request is returned.
 * If the access token is invalid or expired HTTP 401 Unauthorized is returned.
+* If partner does not have access for specific RID, HTTP 403 Forbidden is returned with error "no_rid_routing"
 
 # Registering a Restaurant
 
