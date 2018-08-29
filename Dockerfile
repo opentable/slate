@@ -1,4 +1,4 @@
-FROM docker.otenv.com/ot-java8:latest
+FROM docker.otenv.com/ot-java:9-latest
 
 RUN apt-get update
 RUN apt-get install -yq ruby ruby-dev build-essential
