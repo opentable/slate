@@ -1,6 +1,7 @@
 FROM docker.otenv.com/ot-java:9-latest
 
 RUN apt-get update
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install -yq ruby ruby-dev build-essential
 RUN gem install --no-ri --no-rdoc bundler
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
