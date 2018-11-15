@@ -16,4 +16,7 @@ ADD http://artifactory.otenv.com:8081/artifactory/internal/com/opentable/discove
 
 WORKDIR /app
 
+RUN rm /usr/bin/python
+RUN ln -s /usr/bin/python2.7 /usr/bin/python
+
 CMD ["/usr/bin/supervisord"]
