@@ -5,10 +5,10 @@ language_tabs:
   - ruby
   - python
   - shell
-  
+
 toc_footers:
   - <a href='#authorization'>Sign Up for Developer Access</a>
-  
+
 includes:
   - errors
 
@@ -21,21 +21,21 @@ Welcome to the OpenTable Developer's Guide for using the Network Inventory and G
 
 # Getting Started
 
-Please begin by selecting the service of interest: 
+Please begin by selecting the service of interest:
 
-1. Inventory API - available to groups for sharing available restaurant availability with OpenTable 
+1. Inventory API - available to groups for sharing available restaurant availability with OpenTable
 2. Guest Center Sync API - utilized by third party providers for read-only access to reservations and a restaurant guestlist.
 
 ## Guest Center API Overview
 
 Integration with the Guest Center Sync API involves following steps:
 
-1. Complete the SOC-2 security questionnaire 
-2. Sign and consent to the OpenTable Developer Terms of Service (TOS) 
-3. Confirm which restaurant(s) you wish to work with and have them sign applicable data sharing agreement 
+1. Complete the SOC-2 security questionnaire
+2. Sign and consent to the OpenTable Developer Terms of Service (TOS)
+3. Confirm which restaurant(s) you wish to work with and have them sign applicable data sharing agreement
 4. Request a client id and client secret that are used for authorization
 5. Make a sample 'guest' and 'reservation' pull request in the Pre-Production environment
-6. Send and receive ongoing guest and reservation details by restaurant 
+6. Send and receive ongoing guest and reservation details by restaurant
 
 
 ## Inventory Overview
@@ -52,9 +52,9 @@ Integration with the Inventory API involves following steps:
 
 ### Security
 
-OpenTable uses OAuth 2.0 as the primary authorization mechanism. This means that an access token must be obtained and submitted with all requests. See [Authorization](#authorization) section for more details.OpenTable's Network Partner APIs can only be accessed via **HTTPS**. This applies to all environments. 
+OpenTable uses OAuth 2.0 as the primary authorization mechanism. This means that an access token must be obtained and submitted with all requests. See [Authorization](#authorization) section for more details.OpenTable's Network Partner APIs can only be accessed via **HTTPS**. This applies to all environments.
 
-For developers wishing to use the Guest Center Sync API, prior access must be granted via the SOC-2 approval process. Click here to learn more. 
+For developers wishing to use the Guest Center Sync API, prior access must be granted via the SOC-2 approval process. Click here to learn more.
 
 ### Content Negotiation
 
@@ -419,7 +419,7 @@ expiration_seconds | Long | No | Number of seconds until the lock expires
 
 ## Making a reservation
 
-OpenTable will call the partner API whenever a diner is attempting to book a reservation. OpenTable will call the **lock** API prior to booking a reservation via a POST to the reservation entity. 
+OpenTable will call the partner API whenever a diner is attempting to book a reservation. OpenTable will call the **lock** API prior to booking a reservation via a POST to the reservation entity.
 
 > Opentable POST :: https://&lt;partner_make_reservation_url&gt;
 
@@ -467,7 +467,7 @@ OpenTable will call the partner API whenever a diner is attempting to book a res
 
 Other points of note:
 
-* OpenTable do up to 3 total retries to lock, make, change, or cancel a reservation if it receives and HTTP 5xx response or a timeout. Retries are done with the same request parameters and body. 
+* OpenTable do up to 3 total retries to lock, make, change, or cancel a reservation if it receives and HTTP 5xx response or a timeout. Retries are done with the same request parameters and body.
 
 ### Entity (yet to determine which are optional)
 Member | Description
@@ -627,7 +627,7 @@ Status Code | Description
 ------------ | ----------
 200 | OK
 400 | Invalid Parameters (Bad Request)
-404 | DB is unavailable, try again later. 
+404 | DB is unavailable, try again later.
 
 
 
@@ -848,7 +848,7 @@ Status Code | Description
 ### Request Entity
 Member | Type | Description | Usage
 ------- | ---- |------------ | -----
-ReservationState | string | The string "Canceled". | Required 
+ReservationState | string | The string "Canceled". | Required
 
 ### Response Entity
 
