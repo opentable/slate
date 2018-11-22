@@ -1,6 +1,3 @@
-# Unique header generation
-require './lib/unique_head.rb'
-
 # Markdown
 set :markdown_engine, :redcarpet
 set :markdown,
@@ -11,8 +8,7 @@ set :markdown,
     strikethrough: true,
     tables: true,
     with_toc_data: true,
-    no_intra_emphasis: true,
-    renderer: UniqueHeadCounter
+    no_intra_emphasis: true
 
 # Assets
 set :css_dir, 'stylesheets'
