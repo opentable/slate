@@ -5,6 +5,10 @@
         "memoryMb": 512,
         "numPorts": 1
     },
-    "healthcheckUri": null,
+    "healthcheck": {
+        "startupTimeoutSeconds": 600,
+        "portIndex": 0,
+        "uri": "/"
+    },    
     "considerHealthyAfterRunningForSeconds": 10
 }
