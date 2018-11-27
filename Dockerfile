@@ -1,21 +1,16 @@
-FROM docker.otenv.com/ot-java:9-latest
+FROM ruby:2.5.1
 
-RUN apt-get update
-RUN apt-get install -yq ruby ruby-dev nodejs zlib1g-dev build-essential
-RUN gem install --no-ri --no-rdoc bundler
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
-RUN mkdir -p /var/log/supervisor
+RUN apt-get update && apt-get install -y nodejs \
+&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ADD Gemfile /app/Gemfile
 ADD Gemfile.lock /app/Gemfile.lock
+ADD discovery-wrapper /app/discovery-wrapper
 RUN cd /app; bundle install
 ADD . /app
 
-ADD http://artifactory.otenv.com:8081/artifactory/internal/com/opentable/discovery-announcer-standalone/1.0.4/discovery-announcer-standalone-1.0.4.jar /var/lib/discovery/discovery-announcer-standalone-1.0.4.jar
-
 WORKDIR /app
 
-RUN rm /usr/bin/python
-RUN ln -s /usr/bin/python2.7 /usr/bin/python
+RUN chmod +x discovery-wrapper
 
-CMD ["/usr/bin/supervisord"]
+CMD ["./discovery-wrapper", "-t slate", "-s http", "bundle", "exec", "middleman", "server -p %(ENV_PORT0)s"]
