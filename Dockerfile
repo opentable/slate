@@ -1,4 +1,4 @@
-FROM docker.otenv.com/ot-ubuntu:latest
+FROM docker.otenv.com/ubuntu:latest
 
 RUN apt-get update
 RUN apt-get install -yq ruby ruby-dev build-essential
