@@ -4,7 +4,7 @@ source 'http://rubygems.org'
 
 gem "rouge", "3.2"
 
-gem "middleman", "~>4.3.6"
+gem "middleman", "~>3.3.0"
 
 # For syntax highlighting
 gem "middleman-syntax"
@@ -13,7 +13,7 @@ gem "middleman-syntax"
 gem 'middleman-gh-pages'
 
 # Live-reloading plugin
-gem "middleman-livereload", "~> 3.4.6"
+gem "middleman-livereload", "~> 3.3.0"
 
 gem 'redcarpet', '~> 3.2.1'
 
