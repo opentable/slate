@@ -5,7 +5,6 @@ RUN apt-get install -yq ruby ruby-dev build-essential
 RUN gem install --no-ri --no-rdoc bundler -v 1.3
 
 ADD Gemfile /app/Gemfile
-ADD Gemfile.lock /app/Gemfile.lock
 ADD discovery-wrapper /app/discovery-wrapper
 RUN cd /app; bundle install
 ADD . /app
